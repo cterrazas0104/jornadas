@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -9,26 +9,29 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="max-w-md w-full bg-white p-6 rounded shadow-lg text-center">
         <h1 class="text-2xl font-bold mb-4 text-blue-900">Escáner de Asistencia</h1>
+        
+        <!-- Campo para validar al docente -->
+        <input type="email" id="emailDocente" placeholder="Tu correo institucional" class="w-full p-2 border mb-4 rounded">
+        
         <div id="reader" class="w-full"></div>
         <div id="resultado" class="mt-4 p-4 rounded font-bold hidden"></div>
     </div>
 
     <script>
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
-        const PASS_SECRETA = "CESBA2026"; // Cambia esta contraseña
-
-        // Solicitar contraseña antes de iniciar
-        const userPass = prompt("Introduce la contraseña de acceso:");
-        if (userPass !== PASS_SECRETA) {
-            alert("Acceso denegado");
-            window.location.href = "about:blank";
-        }
-
+          const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
         function onScanSuccess(decodedText) {
+            const emailDocente = document.getElementById('emailDocente').value;
+            if (!emailDocente) { alert("Ingresa tu correo primero"); return; }
+
             const matricula = decodedText.split('-')[1];
+            
             fetch(apiUrl, {
                 method: 'POST',
-                body: JSON.stringify({ action: 'asistencia', matricula: matricula })
+                body: JSON.stringify({ 
+                    action: 'asistencia', 
+                    matricula: matricula, 
+                    correoDocente: emailDocente 
+                })
             })
             .then(res => res.json())
             .then(data => {
@@ -39,11 +42,11 @@
             });
         }
 
-        // Configuración para usar la cámara trasera (environment)
+        // Cámara inteligente: ideal para trasera, fallback a cualquier otra disponible
         let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
             fps: 10, 
             qrbox: 250,
-            facingMode: { exact: "environment" } // FUERZA CÁMARA TRASERA
+            facingMode: { ideal: "environment" } 
         });
         html5QrcodeScanner.render(onScanSuccess);
     </script>
