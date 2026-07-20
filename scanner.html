@@ -1,34 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Escáner de Asistencia</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
-        <h1 class="text-xl font-bold mb-4">Escáner de Asistencia</h1>
-        <div id="reader" style="width: 100%;"></div>
-        <div id="resultado" class="mt-4 p-3 rounded font-bold text-center"></div>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="max-w-md w-full bg-white p-6 rounded shadow-lg text-center">
+        <h1 class="text-2xl font-bold mb-4 text-blue-900">Escáner de Asistencia</h1>
+        <div id="reader" class="w-full"></div>
+        <div id="resultado" class="mt-4 p-4 rounded font-bold hidden"></div>
     </div>
 
     <script>
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
+        const PASS_SECRETA = "CESBA2026"; // Cambia esta contraseña
+
+        // Solicitar contraseña antes de iniciar
+        const userPass = prompt("Introduce la contraseña de acceso:");
+        if (userPass !== PASS_SECRETA) {
+            alert("Acceso denegado");
+            window.location.href = "about:blank";
+        }
+
         function onScanSuccess(decodedText) {
-            // El QR tiene el formato "JORNADA2026-MATRICULA"
             const matricula = decodedText.split('-')[1];
-            
-            // Enviamos la matrícula a Apps Script (debes actualizar la URL a una función doPost que llame a marcarAsistencia)
-            fetch('https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec', {
+            fetch(apiUrl, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'asistencia', matricula: matricula })
             })
-            .then(res => res.text())
-            .then(msg => {
-                document.getElementById('resultado').innerText = msg;
-                document.getElementById('resultado').classList.add('bg-green-200');
+            .then(res => res.json())
+            .then(data => {
+                const resDiv = document.getElementById('resultado');
+                resDiv.classList.remove('hidden', 'bg-red-200', 'bg-green-200');
+                resDiv.classList.add(data.status === 'éxito' ? 'bg-green-200' : 'bg-red-200');
+                resDiv.innerText = data.mensaje;
             });
         }
-        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+
+        // Configuración para usar la cámara trasera (environment)
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
+            fps: 10, 
+            qrbox: 250,
+            facingMode: { exact: "environment" } // FUERZA CÁMARA TRASERA
+        });
         html5QrcodeScanner.render(onScanSuccess);
     </script>
 </body>
