@@ -64,34 +64,42 @@
             document.getElementById('idTaller').innerHTML = '<option value="" disabled>Error al cargar</option>';
         });
 
-        // 2. Lógica de envío
+// 2. Lógica de envío actualizada
         document.getElementById('registroForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const btn = document.getElementById('btnSubmit');
             const mensajeArea = document.getElementById('mensajeArea');
             btn.disabled = true;
-            btn.innerText = "Inscribiendo...";
+            btn.innerText = "Validando...";
 
             const matricula = document.getElementById('matricula').value;
             const idTaller = document.getElementById('idTaller').value;
 
             fetch(apiUrl, {
                 method: 'POST',
-                mode: 'no-cors', // Necesario para evitar bloqueos de CORS
+                // Eliminamos mode: 'no-cors' para poder leer la respuesta JSON del servidor
                 body: JSON.stringify({ matricula: matricula, idTaller: idTaller }),
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             })
-            .then(() => {
-                mensajeArea.classList.remove('hidden', 'bg-red-100', 'text-red-700');
-                mensajeArea.classList.add('bg-green-100', 'text-green-700');
-                mensajeArea.innerText = "¡Inscripción recibida! Revisa tu correo.";
-                document.getElementById('registroForm').reset();
+            .then(response => response.json()) // Ahora sí leemos el JSON que envía Apps Script
+            .then(data => {
+                mensajeArea.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+                
+                if(data.status === 'éxito') {
+                    mensajeArea.classList.add('bg-green-100', 'text-green-700');
+                    mensajeArea.innerText = data.mensaje;
+                    document.getElementById('registroForm').reset();
+                } else {
+                    // AQUÍ ESTÁ EL CAMBIO: Ahora sí muestra el mensaje de error real del servidor
+                    mensajeArea.classList.add('bg-red-100', 'text-red-700');
+                    mensajeArea.innerText = "Error: " + data.mensaje;
+                }
             })
             .catch(() => {
                 mensajeArea.classList.remove('hidden', 'bg-green-100', 'text-green-700');
                 mensajeArea.classList.add('bg-red-100', 'text-red-700');
-                mensajeArea.innerText = "Error al conectar con el servidor.";
+                mensajeArea.innerText = "Error crítico de conexión.";
             })
             .finally(() => {
                 btn.disabled = false;
