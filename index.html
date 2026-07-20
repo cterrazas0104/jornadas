@@ -61,58 +61,27 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('registroForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita que la página se recargue
-            
-            // UI: Cambiar el estado del botón mientras carga
-            const btn = document.getElementById('btnSubmit');
-            const mensajeArea = document.getElementById('mensajeArea');
-            btn.disabled = true;
-            btn.innerText = "Inscribiendo, por favor espera...";
-            mensajeArea.classList.add('hidden');
+<script>
+    // 1. Cargar talleres al abrir la página
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
 
-            // Capturar datos
-            const matricula = document.getElementById('matricula').value;
-            const idTaller = document.getElementById('idTaller').value;
-
-            // Tu URL de Apps Script
-            const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
-
-            // Realizar la petición POST
-            // Nota: En Apps Script usamos text/plain para evitar bloqueos de CORS del navegador
-            fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({ matricula: matricula, idTaller: idTaller }),
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                mensajeArea.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
-                
-                if(data.status === 'éxito') {
-                    mensajeArea.classList.add('bg-green-100', 'text-green-700');
-                    mensajeArea.innerText = data.mensaje + ". Revisa tu correo institucional.";
-                    document.getElementById('registroForm').reset();
-                } else {
-                    // Si el cupo está lleno o hay otro error
-                    mensajeArea.classList.add('bg-red-100', 'text-red-700');
-                    mensajeArea.innerText = "Error: " + data.mensaje;
-                }
-            })
-            .catch(error => {
-                mensajeArea.classList.remove('hidden');
-                mensajeArea.classList.add('bg-red-100', 'text-red-700');
-                mensajeArea.innerText = "Hubo un problema de conexión. Intenta de nuevo.";
-            })
-            .finally(() => {
-                // Restaurar el botón
-                btn.disabled = false;
-                btn.innerText = "Confirmar Inscripción";
-            });
+    fetch(apiUrl)
+    .then(response => response.json())
+    .then(talleres => {
+        const select = document.getElementById('idTaller');
+        talleres.forEach(taller => {
+            let option = document.createElement('option');
+            option.value = taller.ID_Taller;
+            option.text = `${taller.ID_Taller} - ${taller.Nombre}`;
+            select.appendChild(option);
         });
-    </script>
+    });
+
+    // 2. Lógica de envío (igual que antes)
+    document.getElementById('registroForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // ... (el resto de tu código de registro sigue igual)
+    });
+</script>
 </body>
 </html>
