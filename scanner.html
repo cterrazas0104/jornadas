@@ -1,4 +1,4 @@
-     <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,48 +6,47 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="max-w-md w-full bg-white p-6 rounded shadow-lg text-center">
-        <h1 class="text-2xl font-bold mb-4 text-blue-900">Escáner de Asistencia</h1>
+<body class="bg-gray-100 p-4">
+    <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+        <h1 class="text-xl font-bold mb-4">Control de Asistencia</h1>
+        <input type="email" id="emailDocente" placeholder="Correo institucional" class="w-full p-2 border mb-2 rounded">
         
-        <!-- Campo para validar al docente -->
-        <input type="email" id="emailDocente" placeholder="Tu correo institucional" class="w-full p-2 border mb-4 rounded">
-        
-        <div id="reader" class="w-full"></div>
-        <div id="resultado" class="mt-4 p-4 rounded font-bold hidden"></div>
+        <select id="tipoAsistencia" class="w-full p-2 border mb-4 rounded">
+            <option value="general">Asistencia General</option>
+            <option value="taller">Asistencia Taller</option>
+        </select>
+
+        <div id="reader"></div>
+        <div id="resultado" class="mt-4 p-4 text-center hidden rounded"></div>
     </div>
 
     <script>
-          const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
-        function onScanSuccess(decodedText) {
-            const emailDocente = document.getElementById('emailDocente').value;
-            if (!emailDocente) { alert("Ingresa tu correo primero"); return; }
+        const apiUrl = 'TU_URL_AQUÍ';
 
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
+            fps: 20, qrbox: 200, facingMode: { ideal: "environment" } 
+        });
+
+        function onScanSuccess(decodedText) {
             const matricula = decodedText.split('-')[1];
-            
             fetch(apiUrl, {
                 method: 'POST',
                 body: JSON.stringify({ 
                     action: 'asistencia', 
                     matricula: matricula, 
-                    correoDocente: emailDocente 
+                    correoDocente: document.getElementById('emailDocente').value,
+                    tipo: document.getElementById('tipoAsistencia').value
                 })
             })
             .then(res => res.json())
             .then(data => {
                 const resDiv = document.getElementById('resultado');
-                resDiv.classList.remove('hidden', 'bg-red-200', 'bg-green-200');
-                resDiv.classList.add(data.status === 'éxito' ? 'bg-green-200' : 'bg-red-200');
                 resDiv.innerText = data.mensaje;
+                resDiv.className = "mt-4 p-4 text-center rounded " + (data.status === 'éxito' ? 'bg-green-500' : 'bg-red-500');
+                resDiv.classList.remove('hidden');
+                setTimeout(() => resDiv.classList.add('hidden'), 2000);
             });
         }
-
-        // Cámara inteligente: ideal para trasera, fallback a cualquier otra disponible
-        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
-            fps: 10, 
-            qrbox: 250,
-            facingMode: { ideal: "environment" } 
-        });
         html5QrcodeScanner.render(onScanSuccess);
     </script>
 </body>
