@@ -6,22 +6,20 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-4">
-    <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
-        <h1 class="text-xl font-bold mb-4">Control de Asistencia</h1>
-        <input type="email" id="emailDocente" placeholder="Correo institucional" class="w-full p-2 border mb-2 rounded">
-        
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="max-w-md w-full bg-white p-6 rounded shadow-lg text-center">
+        <h1 class="text-2xl font-bold mb-4 text-blue-900">Control de Asistencia</h1>
+        <input type="email" id="emailDocente" placeholder="Tu correo institucional" class="w-full p-2 border mb-2 rounded">
         <select id="tipoAsistencia" class="w-full p-2 border mb-4 rounded">
             <option value="general">Asistencia General</option>
             <option value="taller">Asistencia Taller</option>
         </select>
-
-        <div id="reader"></div>
-        <div id="resultado" class="mt-4 p-4 text-center hidden rounded"></div>
+        <div id="reader" class="w-full"></div>
+        <div id="resultado" class="mt-4 p-4 text-center rounded hidden font-bold"></div>
     </div>
 
     <script>
-        const apiUrl = 'TU_URL_AQUÍ';
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
 
         let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
             fps: 20, qrbox: 200, facingMode: { ideal: "environment" } 
@@ -42,7 +40,7 @@
             .then(data => {
                 const resDiv = document.getElementById('resultado');
                 resDiv.innerText = data.mensaje;
-                resDiv.className = "mt-4 p-4 text-center rounded " + (data.status === 'éxito' ? 'bg-green-500' : 'bg-red-500');
+                resDiv.className = "mt-4 p-4 text-center rounded font-bold " + (data.status === 'éxito' ? 'bg-green-500 text-white' : 'bg-red-500 text-white');
                 resDiv.classList.remove('hidden');
                 setTimeout(() => resDiv.classList.add('hidden'), 2000);
             });
