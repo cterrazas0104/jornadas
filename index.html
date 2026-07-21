@@ -382,7 +382,7 @@
             window.location.href = '#registro';
         }
 
-        // Formulario Registro de Alumnos
+       // Formulario Registro de Alumnos
         document.getElementById('registroForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
@@ -400,16 +400,20 @@
             })
             .then(res => res.json())
             .then(data => {
-                mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl " + 
-                    (data.status === 'éxito' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-rose-100 text-rose-800 border border-rose-200');
-                
-                mensajeArea.innerText = data.status === 'éxito' ? "¡Registro Exitoso! Revisa tu correo institucional para recibir tu código QR de acceso." : "Error: " + data.mensaje;
+                if (data.status === 'éxito') {
+                    mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm";
+                    mensajeArea.innerText = data.mensaje;
+                    this.reset();
+                } else {
+                    // Diseño tipo "Aviso / Advertencia" (Amarillo/Ámbar) sin anteponer "Error:"
+                    mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 shadow-sm";
+                    mensajeArea.innerText = "⚠️ " + data.mensaje;
+                }
                 mensajeArea.classList.remove('hidden');
-                if(data.status === 'éxito') this.reset();
             })
             .catch(() => {
                 mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-rose-100 text-rose-800 border border-rose-200";
-                mensajeArea.innerText = "Error de conexión con el servidor.";
+                mensajeArea.innerText = "No se pudo completar la solicitud. Por favor, verifica tu conexión a internet e inténtalo de nuevo.";
                 mensajeArea.classList.remove('hidden');
             })
             .finally(() => {
