@@ -543,12 +543,12 @@
                 .catch(() => alert("Error al procesar el envío masivo."));
             }
         }
-        // 1. DESCARGAR PLANTILLA / LAYOUT EN FORMATO CSV
+// 1. DESCARGAR PLANTILLA / LAYOUT EN FORMATO CSV (CON QUOTES CORRECTOS)
 function descargarPlantillaTalleres() {
-    let csvContent = "\uFEFF"; // UTF-8 BOM para soporte de acentos en Excel
+    let csvContent = "\uFEFF"; // UTF-8 BOM para excelente compatibilidad con Excel
     csvContent += "ID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos\n";
-    csvContent += "T01,Introducción a los Contenedores,Guillermo Pucheta,25,\"Laptop con Windows 10/11 o macOS, 8GB RAM, Virtualization activa en BIOS.\"\n";
-    csvContent += "T02,MongoDB,Mtro. César Terrazas,30,\"Laptop con VirtualBox instalado y 30GB libres en disco duro.\"\n";
+    csvContent += "T01,\"Introducción a los Contenedores\",\"Guillermo Pucheta\",25,\"Laptop con Windows 10/11 o macOS, 8GB RAM, Virtualization activa en BIOS.\"\n";
+    csvContent += "T02,\"MongoDB\",\"Mtro. César Terrazas\",30,\"Laptop con VirtualBox instalado y 30GB libres en disco duro.\"\n";
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -560,7 +560,42 @@ function descargarPlantillaTalleres() {
     document.body.removeChild(link);
 }
 
-// 2. LEER Y SUBIR ARCHIVO CSV AL SERVIDOR
+// 2. PARSER CSV ROBUSTO (Mantiene espacios, comas y comillas intactas)
+function parsearLineaCSV(linea) {
+    let resultado = [];
+    let celda = '';
+    let enComillas = false;
+
+    for (let i = 0; i < linea.length; i++) {
+        let char = linea[i];
+
+        if (enComillas) {
+            if (char === '"') {
+                if (i + 1 < linea.length && linea[i + 1] === '"') {
+                    celda += '"';
+                    i++;
+                } else {
+                    enComillas = false;
+                }
+            } else {
+                celda += char;
+            }
+        } else {
+            if (char === '"') {
+                enComillas = true;
+            } else if (char === ',') {
+                resultado.push(celda.trim());
+                celda = '';
+            } else {
+                celda += char;
+            }
+        }
+    }
+    resultado.push(celda.trim());
+    return resultado;
+}
+
+// 3. LEER Y SUBIR ARCHIVO CSV AL SERVIDOR
 function procesarCSV(input) {
     const file = input.files[0];
     if (!file) return;
@@ -572,11 +607,9 @@ function procesarCSV(input) {
         let matriz = [];
 
         for (let i = 0; i < lineas.length; i++) {
-            if (lineas[i].trim() !== '') {
-                // Regex para respetar comas dentro de textos entre comillas
-                const columnas = lineas[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lineas[i].split(',');
-                const filaLimpia = columnas.map(col => col.replace(/^"|"$/g, '').trim());
-                matriz.push(filaLimpia);
+            const lineaLimpia = lineas[i].trim();
+            if (lineaLimpia !== '') {
+                matriz.push(parsearLineaCSV(lineaLimpia));
             }
         }
 
@@ -600,13 +633,16 @@ function procesarCSV(input) {
             .then(data => {
                 if (data.status === 'éxito') {
                     alert("¡Éxito! " + data.mensaje);
-                    recargarDatos(); // Refresca las tarjetas en pantalla
+                    recargarDatos(); // Refresca las tarjetas
                 } else {
                     alert("Error: " + data.mensaje);
                 }
             })
             .catch(() => alert("Error de red al intentar actualizar los talleres."));
         }
+        
+        // Limpiar el input file para permitir subir el mismo archivo si se vuelve a editar
+        input.value = '';
     };
 
     reader.readAsText(file, "UTF-8");
