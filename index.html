@@ -3,184 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jornada Tecnológica 2025 | CESBA Querétaro</title>
-    <!-- Tailwind CSS para diseño -->
+    <title>Jornada Tecnológica 2026 | CESBA Querétaro</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- html5-qrcode para el escáner oculto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- html5-qrcode (Escáner) -->
     <script src="https://unpkg.com/html5-qrcode"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .hero-pattern {
-            background-color: #1e3a8a;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
-    </style>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         cesba: {
-                            blue: '#1e3a8a',
+                            blue: '#111827',
+                            primary: '#1e3a8a',
                             purple: '#ad8ad4',
-                            dark: '#212121'
+                            purpleDark: '#4f474e',
+                            accent: '#8b5cf6'
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #4c1d95 100%);
+        }
+        .purple-glow {
+            box-shadow: 0 0 25px -5px rgba(173, 138, 212, 0.4);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="bg-gray-100 font-sans text-gray-900 antialiased selection:bg-cesba-purple selection:text-white">
 
-    <!-- Navegación -->
-    <nav class="bg-white shadow-md fixed w-full z-50 top-0">
+    <!-- NAVEGACIÓN -->
+    <nav class="bg-cesba-blue/95 backdrop-blur-md text-white fixed w-full z-50 top-0 border-b border-white/10 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <span class="font-bold text-xl text-cesba-blue">CESBA Querétaro</span>
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-cesba-purple rounded-lg flex items-center justify-center font-bold text-cesba-blue text-xl shadow-md">
+                        C
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-lg tracking-wider block leading-none">CESBA</span>
+                        <span class="text-xs text-cesba-purple font-light tracking-widest uppercase">Campus Querétaro</span>
+                    </div>
                 </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#inicio" class="text-gray-600 hover:text-cesba-blue transition">Inicio</a>
-                    <a href="#talleres" class="text-gray-600 hover:text-cesba-blue transition">Talleres</a>
-                    <a href="#registro" class="bg-cesba-blue text-white px-4 py-2 rounded-md hover:bg-blue-800 transition shadow">Regístrate</a>
+                
+                <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#inicio" class="hover:text-cesba-purple transition">Inicio</a>
+                    <a href="#agenda" class="hover:text-cesba-purple transition">Agenda</a>
+                    <a href="#talleres" class="hover:text-cesba-purple transition">Talleres</a>
+                    <a href="#lugar" class="hover:text-cesba-purple transition">Lugar</a>
+                    <a href="#registro" class="bg-cesba-purple text-cesba-blue font-bold px-5 py-2.5 rounded-full hover:bg-white transition duration-300 shadow-md">
+                        Registro a Talleres
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Sección Hero (Inicio) -->
-    <section id="inicio" class="hero-pattern text-white pt-24 pb-16 md:pt-32 md:pb-24">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-cesba-purple font-semibold tracking-wider uppercase mb-2">11 de Octubre 2025</h2>
-            <h1 class="text-5xl md:text-6xl font-bold mb-6">Jornada Tecnológica 2025</h1>
-            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                Evento anual de la escuela de Sistemas Computacionales. Únete a expertos y líderes para compartir experiencia y generar un espacio de aprendizaje vanguardista.
+    <!-- SECCIÓN HERO (INICIO) -->
+    <section id="inicio" class="hero-gradient text-white pt-32 pb-20 md:pt-40 md:pb-28 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(#ad8ad4_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
+        <div class="max-w-5xl mx-auto px-4 text-center relative z-10">
+            
+            <div class="inline-flex items-center space-x-2 bg-white/10 border border-cesba-purple/30 backdrop-blur-md px-4 py-1.5 rounded-full mb-6 text-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="text-cesba-purple font-semibold">10 de Octubre 2026</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-4 uppercase">
+                Jornada <span class="text-transparent bg-clip-text bg-gradient-to-r from-cesba-purple via-purple-300 to-indigo-200">Tecnológica</span> 2026
+            </h1>
+
+            <p class="text-lg md:text-xl text-purple-200 font-light max-w-3xl mx-auto mb-2">
+                Escuela de Sistemas Computacionales
             </p>
-            <div class="flex justify-center gap-4">
-                <a href="#registro" class="bg-cesba-purple text-cesba-dark font-bold px-8 py-3 rounded-md hover:bg-white transition shadow-lg">Inscribirme ahora</a>
-                <a href="#talleres" class="bg-transparent border-2 border-white px-8 py-3 rounded-md hover:bg-white hover:text-cesba-blue transition">Ver Talleres</a>
-            </div>
-            <p class="mt-6 text-sm text-blue-200">En Campus CESBA Querétaro</p>
-        </div>
-    </section>
+            <p class="text-cesba-purple font-medium text-lg italic tracking-wider mb-8">
+                "Crea el futuro"
+            </p>
 
-    <!-- Información General -->
-    <section class="py-16 bg-white">
-        <div class="max-w-3xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold text-cesba-blue mb-4">Avisos Importantes</h2>
-            <div class="bg-blue-50 p-6 rounded-lg border border-blue-100 text-left">
-                <ul class="space-y-3 text-gray-700">
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-cesba-purple mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <strong>Periodo de Registro:</strong> 28 de septiembre al 4 de octubre de 2025.
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-cesba-purple mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Cada alumno deberá tomar <strong>solo un taller</strong> (se desarrollan simultáneamente de 9:30 a 14:00 hrs).
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-cesba-purple mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                        Deberás registrarte usando tu <strong>correo institucional</strong>.
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="h-6 w-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        <span class="text-red-700 text-sm">Si se detecta doble registro, los organizadores elegirán tu taller.</span>
-                    </li>
-                </ul>
+            <p class="text-gray-300 max-w-2xl mx-auto text-sm md:text-base mb-10 leading-relaxed">
+                Evento anual con charlas y talleres de vanguardia tecnológica. Un espacio diseñado para reunir a expertos y líderes del ramo para aprender y compartir experiencia.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#registro" class="bg-cesba-purple text-cesba-blue font-extrabold px-8 py-4 rounded-xl hover:bg-white transition duration-300 shadow-xl purple-glow text-center">
+                    Inscribirme a un Taller
+                </a>
+                <a href="#agenda" class="bg-white/10 hover:bg-white/20 border border-white/20 px-8 py-4 rounded-xl font-medium transition duration-300 text-center">
+                    Ver Agenda del Evento
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Sección de Talleres Dinámica -->
-    <section id="talleres" class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center text-cesba-blue mb-12">Opciones de Talleres</h2>
-            <!-- Contenedor donde se cargarán los talleres desde Apps Script -->
-            <div id="grid-talleres" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Skeleton de carga -->
-                <div class="bg-white rounded-lg shadow p-6 animate-pulse">
-                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                    <div class="h-32 bg-gray-200 rounded mb-4"></div>
-                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+    <!-- REGLAS DE REGISTRO -->
+    <section class="py-12 bg-cesba-purpleDark text-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div class="text-cesba-purple text-2xl font-bold mb-2">📅 Periodo de Registro</div>
+                    <p class="text-sm text-gray-300">Del 28 de septiembre al 4 de octubre de 2026.</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div class="text-cesba-purple text-2xl font-bold mb-2">⚡ 1 Taller por Alumno</div>
+                    <p class="text-sm text-gray-300">Se desarrollarán de manera simultánea de 9:30 a 14:00 hrs.</p>
+                </div>
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <div class="text-cesba-purple text-2xl font-bold mb-2">🎓 Correo Institucional</div>
+                    <p class="text-sm text-gray-300">Obligatorio registrarte con tu matrícula y correo institucional.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Formulario de Registro (El que ya teníamos) -->
-    <section id="registro" class="py-16 bg-white">
-        <div class="max-w-lg mx-auto px-4">
-            <div class="bg-white border border-gray-100 rounded-2xl shadow-2xl p-8">
-                <h2 class="text-2xl font-bold text-center text-cesba-blue mb-2">Aparta tu lugar</h2>
-                <p class="text-sm text-gray-500 text-center mb-6">Asegúrate de revisar los requisitos del taller antes de inscribirte.</p>
+    <!-- AGENDA -->
+    <section id="agenda" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-cesba-blue">Agenda del Evento</h2>
+                <p class="text-gray-500 mt-2">Sábado 10 de Octubre de 2026</p>
+                <div class="w-16 h-1 bg-cesba-purple mx-auto mt-4 rounded-full"></div>
+            </div>
 
-                <form id="registroForm">
-                    <div class="mb-5">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="matricula">Matrícula</label>
-                        <input class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cesba-blue focus:ring focus:ring-blue-200 transition outline-none" 
-                               id="matricula" type="number" placeholder="Ej. 2022684" required>
+            <div class="space-y-6">
+                <!-- Ítem Agenda -->
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:border-cesba-purple transition">
+                    <div class="w-32 font-black text-cesba-primary text-lg mb-2 md:mb-0">07:30 - 07:50</div>
+                    <div class="md:ml-6 flex-grow">
+                        <h4 class="font-bold text-gray-800 text-lg">Recepción y Registro General</h4>
+                        <p class="text-gray-500 text-sm">Escaneo de accesos QR a la entrada del campus.</p>
                     </div>
+                </div>
 
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="idTaller">Taller a inscribir</label>
-                        <select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-cesba-blue focus:ring focus:ring-blue-200 transition outline-none bg-white appearance-none" 
-                                id="idTaller" required>
-                            <option value="" disabled selected>Cargando opciones...</option>
-                        </select>
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:border-cesba-purple transition">
+                    <div class="w-32 font-black text-cesba-primary text-lg mb-2 md:mb-0">08:00 - 08:15</div>
+                    <div class="md:ml-6 flex-grow">
+                        <h4 class="font-bold text-gray-800 text-lg">Inauguración Oficial</h4>
+                        <p class="text-gray-500 text-sm">Bienvenida por parte de las autoridades académicas.</p>
                     </div>
+                </div>
 
-                    <button id="btnSubmit" class="w-full bg-cesba-blue hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-lg transition shadow-md" type="submit">
-                        Confirmar Inscripción
-                    </button>
-                </form>
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-cesba-purple/10 p-6 rounded-2xl border border-cesba-purple/30">
+                    <div class="w-32 font-black text-cesba-primary text-lg mb-2 md:mb-0">08:20 - 09:00</div>
+                    <div class="md:ml-6 flex-grow">
+                        <h4 class="font-bold text-gray-900 text-lg">Conferencia Magisterial</h4>
+                        <p class="text-gray-600 text-sm">"Comunicación consciente y escucha en entornos tecnológicos"</p>
+                    </div>
+                </div>
 
-                <div id="mensajeArea" class="mt-4 text-center text-sm font-bold hidden p-4 rounded-lg"></div>
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <div class="w-32 font-black text-cesba-primary text-lg mb-2 md:mb-0">09:00 - 09:30</div>
+                    <div class="md:ml-6 flex-grow">
+                        <h4 class="font-bold text-gray-800 text-lg">Break y Traslado a Talleres</h4>
+                        <p class="text-gray-500 text-sm">Receso y ubicación en las aulas/laboratorios asignados.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-cesba-blue text-white p-6 rounded-2xl shadow-md">
+                    <div class="w-32 font-black text-cesba-purple text-lg mb-2 md:mb-0">09:30 - 14:00</div>
+                    <div class="md:ml-6 flex-grow">
+                        <h4 class="font-bold text-lg">Desarrollo de Talleres Simultáneos</h4>
+                        <p class="text-gray-300 text-sm">Pase de asistencia en aula y desarrollo práctico de proyectos.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <div class="w-32 font-black text-cesba-primary text-lg mb-2 md:mb-0">14:00 - 14:20</div>
+                    <div class="md:ml-6 flex-grow">
+                        <h4 class="font-bold text-gray-800 text-lg">Cierre y Fotografía Final</h4>
+                        <p class="text-gray-500 text-sm">Agradecimientos y clausura de la Jornada Tecnológica 2026.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-cesba-dark text-gray-400 py-8 text-center">
-        <div class="max-w-4xl mx-auto px-4">
-            <p>Jornada Tecnológica 2025 • CESBA Campus Querétaro</p>
-            <p class="text-xs mt-2">Desarrollado para el Departamento de TIC</p>
-            <button onclick="mostrarEscaner()" class="text-xs text-gray-600 hover:text-gray-400 mt-4 underline focus:outline-none">Acceso a Docentes (Escáner)</button>
+    <!-- CATALOGO DE TALLERES DINÁMICO -->
+    <section id="talleres" class="py-20 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-cesba-blue">Catálogo de Talleres</h2>
+                <p class="text-gray-500 mt-2">Selecciona la tecnología que deseas dominar este año</p>
+                <div class="w-16 h-1 bg-cesba-purple mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Grid de Talleres desde Apps Script -->
+            <div id="grid-talleres" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Skeleton de Carga -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <section id="registro" class="py-20 bg-white">
+        <div class="max-w-xl mx-auto px-4">
+            <div class="bg-white rounded-3xl border border-gray-200 shadow-2xl p-8 md:p-10 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-cesba-primary via-cesba-purple to-indigo-600"></div>
+                
+                <h2 class="text-2xl md:text-3xl font-black text-center text-cesba-blue mb-2">Formulario de Registro</h2>
+                <p class="text-sm text-gray-500 text-center mb-8">Ingresa tu matrícula para apartar tu lugar inmediatamente.</p>
+
+                <form id="registroForm" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="matricula">Matrícula del Alumno</label>
+                        <input class="w-full px-4 py-3.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cesba-purple focus:border-transparent transition outline-none bg-gray-50" 
+                               id="matricula" type="number" placeholder="Ej. 2022684" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" for="idTaller">Selecciona tu Taller</label>
+                        <select class="w-full px-4 py-3.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-cesba-purple focus:border-transparent transition outline-none bg-gray-50" 
+                                id="idTaller" required>
+                            <option value="" disabled selected>Cargando lista de talleres...</option>
+                        </select>
+                    </div>
+
+                    <button id="btnSubmit" class="w-full bg-cesba-blue hover:bg-cesba-primary text-white font-bold py-4 px-6 rounded-xl transition duration-300 shadow-lg" type="submit">
+                        Confirmar e Inscribir
+                    </button>
+                </form>
+
+                <div id="mensajeArea" class="mt-6 text-center text-sm font-bold hidden p-4 rounded-xl"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LUGAR DEL EVENTO -->
+    <section id="lugar" class="py-20 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-cesba-purple font-bold text-sm tracking-widest uppercase">Ubicación del Evento</span>
+                    <h2 class="text-3xl md:text-4xl font-black mt-2 mb-6">Campus CESBA Querétaro</h2>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        El acto inaugural y la conferencia principal tendrán lugar en las <strong>Canchas de Usos Múltiples</strong>. Posterior a ello, nos trasladaremos a las aulas de cómputo y laboratorios asignados.
+                    </p>
+                    <div class="space-y-3 text-sm text-gray-400">
+                        <p>📍 <strong>Dirección:</strong> Cto. Puerta del Sol 701, Ciudad del Sol, 76116 Santiago de Querétaro, Qro.</p>
+                        <p>🕒 <strong>Horario de Acceso:</strong> Las puertas abren a las 07:30 hrs.</p>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-80">
+                    <iframe class="w-full h-full" frameborder="0" 
+                            src="https://maps-api-ssl.google.com/maps?hl=es&amp;ll=20.648065,-100.483357&amp;output=embed&amp;q=Cto.+Puerta+del+Sol+701,+Ciudad+del+sol,+76116+Santiago+de+Quer%C3%A9taro,+Qro.,+M%C3%A9xico+(CESBA+Quer%C3%A9taro)&amp;z=16">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-gray-500 py-10 text-center border-t border-white/10">
+        <div class="max-w-4xl mx-auto px-4 space-y-4">
+            <p class="text-sm">Centro de Estudios Superiores del Bajío • Campus Querétaro 2026</p>
+            <p class="text-xs text-gray-600">Jefe del Departamento de TIC</p>
+            <button onclick="mostrarEscaner()" class="text-xs text-cesba-purple hover:underline focus:outline-none">
+                🔒 Acceso exclusivo para Docentes (Control de Asistencia)
+            </button>
         </div>
     </footer>
 
-    <!-- MODAL DEL ESCÁNER PARA DOCENTES (Oculto por defecto) -->
-    <div id="modalEscaner" class="fixed inset-0 z-[100] bg-black bg-opacity-90 hidden flex-col items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="cerrarEscaner()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <!-- MODAL ESCÁNER DOCENTES -->
+    <div id="modalEscaner" class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="cerrarEscaner()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-700">
+                ✕
             </button>
             
-            <h3 class="text-xl font-bold text-cesba-blue mb-4">Control de Asistencia</h3>
+            <h3 class="text-2xl font-bold text-cesba-blue mb-1">Pase de Asistencia</h3>
+            <p class="text-xs text-gray-500 mb-6">Escáner de códigos QR para la Jornada 2026</p>
             
-            <input type="email" id="emailDocente" placeholder="Tu correo @cesba-queretaro.edu.mx" class="w-full p-3 border border-gray-300 mb-3 rounded-lg outline-none focus:border-cesba-blue">
-            
-            <select id="tipoAsistencia" class="w-full p-3 border border-gray-300 mb-4 rounded-lg outline-none focus:border-cesba-blue">
-                <option value="general">Asistencia General (Conferencia)</option>
-                <option value="taller">Asistencia a Taller</option>
-            </select>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Correo Docente</label>
+                    <input type="email" id="emailDocente" placeholder="correo@cesba-queretaro.edu.mx" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Momento de Registro</label>
+                    <select id="tipoAsistencia" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                        <option value="general">1. Conferencia General (Entrada)</option>
+                        <option value="taller">2. Taller Específico (Aula)</option>
+                    </select>
+                </div>
+            </div>
 
-            <div id="reader" class="rounded-xl overflow-hidden border border-gray-200"></div>
-            <div id="resultadoEscaner" class="mt-4 p-3 text-center rounded-lg hidden font-bold"></div>
+            <div id="reader" class="rounded-2xl overflow-hidden border-2 border-dashed border-gray-300"></div>
+            <div id="resultadoEscaner" class="mt-4 p-4 text-center rounded-xl font-bold hidden text-sm"></div>
         </div>
     </div>
 
-    <!-- SCRIPTS DE LÓGICA -->
+    <!-- SCRIPT PRINCIPAL -->
     <script>
-        // === 1. CONFIGURACIÓN ===
-        // ¡IMPORTANTE! Esta es tu URL de Apps Script. No la cambies.
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
 
-        // === 2. CARGAR TALLERES (Para la vista y el formulario) ===
+        // Cargar catálogo de talleres dinámico
         document.addEventListener('DOMContentLoaded', () => {
             fetch(apiUrl)
             .then(res => res.json())
@@ -188,145 +317,118 @@
                 const select = document.getElementById('idTaller');
                 const grid = document.getElementById('grid-talleres');
                 
-                select.innerHTML = '<option value="" disabled selected>Elige un taller...</option>';
-                grid.innerHTML = ''; // Limpiar skeleton
+                select.innerHTML = '<option value="" disabled selected>Elige una opción...</option>';
+                grid.innerHTML = ''; 
 
-                // Filtramos solo filas válidas
                 const talleresValidos = talleres.filter(t => t.ID_Taller);
 
                 talleresValidos.forEach(taller => {
-                    // Llenar el Select del Formulario
+                    // Opción para Select
                     let option = document.createElement('option');
                     option.value = taller.ID_Taller;
-                    option.text = `${taller.Nombre} (Cupo: ${taller.Cupo_Maximo})`;
+                    option.text = `${taller.ID_Taller} - ${taller.Nombre}`;
                     select.appendChild(option);
 
-                    // Crear Tarjeta para la sección de información
-                    // (Asume que en tu hoja tienes una columna "Instructor" y "Requisitos")
-                    const instructor = taller.Instructor || 'Por definir';
-                    const requisitos = taller.Requisitos || 'Ninguno especificado.';
-                    
-                    const card = `
-                        <div class="bg-white rounded-xl shadow-md p-6 card-hover border border-gray-100 flex flex-col h-full">
-                            <div class="mb-4">
-                                <span class="text-xs font-bold text-white bg-cesba-purple px-2 py-1 rounded uppercase tracking-wide">${taller.ID_Taller}</span>
+                    // Tarjeta Visual
+                    const instructor = taller.Instructor || 'Docente de Sistemas';
+                    const tarjeta = `
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-3 py-1 rounded-full uppercase">${taller.ID_Taller}</span>
+                                    <span class="text-xs font-medium text-gray-400">Cupo: ${taller.Cupo_Maximo}</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">${taller.Nombre}</h3>
+                                <p class="text-sm font-medium text-cesba-primary mb-4">👨‍🏫 ${instructor}</p>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-2 leading-tight">${taller.Nombre}</h3>
-                            <p class="text-sm text-gray-600 mb-4"><span class="font-semibold">Instructor:</span> ${instructor}</p>
-                            <div class="text-sm text-gray-500 mb-6 flex-grow">
-                                <span class="font-semibold text-gray-700 block mb-1">Requisitos:</span>
-                                ${requisitos}
-                            </div>
-                            <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
-                                <span class="text-sm text-gray-500">Cupo: ${taller.Cupo_Maximo}</span>
-                                <button onclick="seleccionarTaller('${taller.ID_Taller}')" class="text-sm text-cesba-blue font-semibold hover:underline">Inscribirme</button>
+                            <div class="pt-4 border-t border-gray-100 flex justify-end">
+                                <button onclick="elegirTaller('${taller.ID_Taller}')" class="text-sm font-bold text-cesba-purpleDark hover:text-cesba-primary transition">
+                                    Seleccionar Taller →
+                                </button>
                             </div>
                         </div>
                     `;
-                    grid.innerHTML += card;
+                    grid.innerHTML += tarjeta;
                 });
-            })
-            .catch(err => {
-                console.error("Error cargando talleres:", err);
-                document.getElementById('idTaller').innerHTML = '<option value="" disabled>Error de conexión</option>';
-                document.getElementById('grid-talleres').innerHTML = '<p class="text-red-500 text-center col-span-full">No se pudieron cargar los talleres. Revisa tu conexión.</p>';
             });
         });
 
-        // Función auxiliar: si dan clic en "Inscribirme" en la tarjeta, los baja al form y selecciona el taller
-        function seleccionarTaller(id) {
+        function elegirTaller(id) {
             document.getElementById('idTaller').value = id;
-            document.getElementById('matricula').focus();
             window.location.href = '#registro';
         }
 
-        // === 3. LÓGICA DE INSCRIPCIÓN (Formulario) ===
+        // Lógica de Envío del Formulario
         document.getElementById('registroForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const btn = document.getElementById('btnSubmit');
             const mensajeArea = document.getElementById('mensajeArea');
             btn.disabled = true;
-            btn.innerText = "Procesando registro...";
-
-            const payload = {
-                matricula: document.getElementById('matricula').value,
-                idTaller: document.getElementById('idTaller').value
-                // action está indefinido, el backend asumirá que es inscripción
-            };
+            btn.innerText = "Verificando...";
 
             fetch(apiUrl, {
                 method: 'POST',
-                body: JSON.stringify(payload),
+                body: JSON.stringify({
+                    matricula: document.getElementById('matricula').value,
+                    idTaller: document.getElementById('idTaller').value
+                }),
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                mensajeArea.className = "mt-4 text-center text-sm font-bold p-4 rounded-lg " + 
-                    (data.status === 'éxito' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700');
-                mensajeArea.innerText = data.status === 'éxito' ? "¡Éxito! Revisa tu correo institucional para el QR." : "Error: " + data.mensaje;
+                mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl " + 
+                    (data.status === 'éxito' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-rose-100 text-rose-800 border border-rose-200');
+                
+                mensajeArea.innerText = data.status === 'éxito' ? "¡Registro Exitoso! Revisa tu correo institucional para recibir tu código QR de acceso." : "Error: " + data.mensaje;
                 mensajeArea.classList.remove('hidden');
                 if(data.status === 'éxito') this.reset();
             })
             .catch(() => {
-                mensajeArea.className = "mt-4 text-center text-sm font-bold p-4 rounded-lg bg-red-100 text-red-700";
-                mensajeArea.innerText = "Error de comunicación con el servidor.";
+                mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-rose-100 text-rose-800 border border-rose-200";
+                mensajeArea.innerText = "Error de conexión con el servidor.";
                 mensajeArea.classList.remove('hidden');
             })
             .finally(() => {
                 btn.disabled = false;
-                btn.innerText = "Confirmar Inscripción";
-                // Ocultar mensaje después de unos segundos
-                setTimeout(() => { mensajeArea.classList.add('hidden'); }, 8000);
+                btn.innerText = "Confirmar e Inscribir";
             });
         });
 
-        // === 4. LÓGICA DEL ESCÁNER PARA DOCENTES ===
-        let scannerInstancia = null;
+        // Escáner Modal
+        let html5QrcodeScanner = null;
 
         function mostrarEscaner() {
             document.getElementById('modalEscaner').classList.remove('hidden');
             document.getElementById('modalEscaner').classList.add('flex');
             
-            if (!scannerInstancia) {
-                scannerInstancia = new Html5QrcodeScanner("reader", { 
-                    fps: 15, // Disparo rápido
-                    qrbox: {width: 250, height: 250},
+            if (!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
+                    fps: 20, 
+                    qrbox: 220,
                     facingMode: { ideal: "environment" } 
                 });
-                scannerInstancia.render(onScanSuccess);
+                html5QrcodeScanner.render(onScanSuccess);
             }
         }
 
         function cerrarEscaner() {
             document.getElementById('modalEscaner').classList.add('hidden');
             document.getElementById('modalEscaner').classList.remove('flex');
-            if (scannerInstancia) {
-                scannerInstancia.clear();
-                scannerInstancia = null;
-            }
         }
 
         function onScanSuccess(decodedText) {
-            const correoDocente = document.getElementById('emailDocente').value;
-            if (!correoDocente || !correoDocente.includes('@')) {
-                alert("Por favor, ingresa un correo de docente válido primero.");
-                return;
-            }
+            const correo = document.getElementById('emailDocente').value;
+            if (!correo) { alert("Ingresa tu correo institucional"); return; }
 
-            // Pausa el escáner mientras procesa
-            scannerInstancia.pause();
-
-            // Extrae la matrícula (asume formato JORNADA2026-MATRICULA o similar)
             const partes = decodedText.split('-');
             const matricula = partes.length > 1 ? partes[1] : decodedText;
-            
+
             fetch(apiUrl, {
                 method: 'POST',
-                body: JSON.stringify({ 
-                    action: 'asistencia', 
-                    matricula: matricula, 
-                    correoDocente: correoDocente,
+                body: JSON.stringify({
+                    action: 'asistencia',
+                    matricula: matricula,
+                    correoDocente: correo,
                     tipo: document.getElementById('tipoAsistencia').value
                 })
             })
@@ -334,19 +436,10 @@
             .then(data => {
                 const resDiv = document.getElementById('resultadoEscaner');
                 resDiv.innerText = data.mensaje;
-                resDiv.className = "mt-4 p-3 text-center rounded-lg font-bold " + 
-                    (data.status === 'éxito' ? 'bg-green-500 text-white' : 'bg-red-500 text-white');
+                resDiv.className = "mt-4 p-4 text-center rounded-xl font-bold text-white " + 
+                    (data.status === 'éxito' ? 'bg-emerald-600' : 'bg-rose-600');
                 resDiv.classList.remove('hidden');
-                
-                // Reinicia el escáner tras 2.5 segundos
-                setTimeout(() => { 
-                    resDiv.classList.add('hidden'); 
-                    scannerInstancia.resume();
-                }, 2500);
-            })
-            .catch(err => {
-                alert("Error de red.");
-                scannerInstancia.resume();
+                setTimeout(() => resDiv.classList.add('hidden'), 2500);
             });
         }
     </script>
