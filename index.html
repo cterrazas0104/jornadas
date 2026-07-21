@@ -336,6 +336,7 @@
     <script>
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
         let html5QrcodeScanner = null;
+        let escaneandoEnProceso = false; // Candado para evitar lecturas duplicadas mientras responde el servidor
 
         // CARGAR CATÁLOGO DE TALLERES Y REQUISITOS
         document.addEventListener('DOMContentLoaded', () => {
@@ -359,7 +360,6 @@
                     const instructor = taller.Instructor || 'Docente de Sistemas';
                     const requisitos = taller.Requisitos || 'Sin requisitos especiales de hardware/software.';
 
-                    // Tarjeta Visual con Sección de Requisitos
                     const tarjeta = `
                         <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full">
                             <div>
@@ -370,7 +370,6 @@
                                 <h3 class="text-xl font-extrabold text-cesba-blue mb-1">${taller.Nombre}</h3>
                                 <p class="text-xs font-bold text-cesba-primary mb-4">👨‍🏫 Instructor: ${instructor}</p>
                                 
-                                <!-- CAJA DESTACADA DE REQUISITOS -->
                                 <div class="bg-purple-50/60 rounded-2xl p-4 border border-purple-100 text-xs text-gray-700 mb-6 space-y-1">
                                     <span class="font-extrabold text-cesba-primary block uppercase tracking-wider text-[10px] mb-1 flex items-center gap-1">
                                         💻 Requisitos del Taller:
@@ -541,7 +540,7 @@
 
             if (!html5QrcodeScanner) {
                 html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
-                    fps: 20, 
+                    fps: 15, 
                     qrbox: 220,
                     facingMode: { ideal: "environment" } 
                 });
@@ -558,7 +557,27 @@
             mostrarVistaLogin();
         }
 
+        // BEEP SONORO AL DETECTAR QR
+        function reproducirBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = "sine";
+                osc.frequency.value = 880; // Tono agudo claro
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } catch(e) {}
+        }
+
+        // LÓGICA DE ESCANEO FLUIDO
         function onScanSuccess(decodedText) {
+            // Evita procesar múltiples lecturas simultáneas
+            if (escaneandoEnProceso) return;
+
             const correoDocente = obtenerSesionValida();
             if (!correoDocente) {
                 alert("La sesión ha expirado. Inicia sesión nuevamente.");
@@ -569,6 +588,16 @@
             const partes = decodedText.split('-');
             const matricula = partes.length > 1 ? partes[1] : decodedText;
 
+            // 1. REACCION INMEDIATA (MILISEGUNDO 0)
+            escaneandoEnProceso = true;
+            reproducirBeep(); // Emite sonido de lectura
+
+            const resDiv = document.getElementById('resultadoEscaner');
+            resDiv.innerText = `⏳ QR Detectado (${matricula})... Registrando en servidor`;
+            resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-amber-900 bg-amber-100 border border-amber-300 shadow-md animate-pulse";
+            resDiv.classList.remove('hidden');
+
+            // 2. PETICION AL SERVIDOR EN SEGUNDO PLANO
             fetch(apiUrl, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -580,12 +609,20 @@
             })
             .then(res => res.json())
             .then(data => {
-                const resDiv = document.getElementById('resultadoEscaner');
-                resDiv.innerText = data.mensaje;
-                resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white " + 
+                resDiv.innerText = (data.status === 'éxito' ? '✅ ' : '⚠️ ') + data.mensaje;
+                resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white shadow-md " + 
                     (data.status === 'éxito' ? 'bg-emerald-600' : 'bg-rose-600');
-                resDiv.classList.remove('hidden');
-                setTimeout(() => resDiv.classList.add('hidden'), 2200);
+            })
+            .catch(() => {
+                resDiv.innerText = "❌ Error de conexión al registrar asistencia.";
+                resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white bg-rose-600 shadow-md";
+            })
+            .finally(() => {
+                // 3. PAUSA DE 2.5 SEGUNDOS ANTES DE ACTIVAR LA SIGUIENTE LECTURA
+                setTimeout(() => {
+                    resDiv.classList.add('hidden');
+                    escaneandoEnProceso = false; // Desbloquea para el siguiente alumno
+                }, 2500);
             });
         }
     </script>
