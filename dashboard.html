@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuarto de Control | Jornada Tecnológica 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2pdf.js para exportación a PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cesba: {
+                            blue: '#0f172a',
+                            primary: '#1e3a8a',
+                            purple: '#ad8ad4',
+                            purpleDark: '#4f474e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-900 antialiased min-h-screen">
+
+    <!-- BARRA SUPERIOR -->
+    <nav class="bg-cesba-blue text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-cesba-purple text-cesba-blue font-black px-2.5 py-1 rounded-lg text-sm">CONTROL</span>
+                    <span class="font-bold text-lg">Jornada Tecnológica 2026</span>
+                </div>
+                <div id="userInfo" class="hidden items-center space-x-4">
+                    <span id="labelAdminCorreo" class="text-xs text-purple-200 font-medium"></span>
+                    <button onclick="recargarDatos()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition">🔄 Actualizar</button>
+                    <button onclick="cerrarSesionAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">Salir</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- VISTA LOGIN -->
+    <main id="vistaLogin" class="max-w-md mx-auto p-4 mt-16">
+        <div class="bg-white rounded-3xl p-8 shadow-2xl border border-gray-200">
+            <h2 class="text-2xl font-black text-cesba-blue mb-2 text-center">Acceso Administrativo</h2>
+            <p class="text-xs text-gray-500 text-center mb-6">Exclusivo para Coordinación y Dirección de TIC</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Correo de Administrador</label>
+                    <input type="email" id="adminCorreo" placeholder="admin@cesba-queretaro.edu.mx" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Contraseña</label>
+                    <input type="password" id="adminPass" placeholder="••••••••" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                </div>
+                <button id="btnLogin" onclick="ejecutarLoginAdmin()" class="w-full bg-cesba-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl text-sm transition">
+                    Ingresar al Panel
+                </button>
+                <div id="msgLogin" class="text-xs text-center font-bold hidden p-3 rounded-lg"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA DASHBOARD COMPLETO -->
+    <main id="vistaDashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- CARDS DE METRICAS EN TIEMPO REAL -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Inscritos</span>
+                <div id="kpiInscritos" class="text-4xl font-black text-cesba-blue mt-2">0</div>
+                <span class="text-xs text-gray-500 mt-1 block">Alumnos registrados en sistema</span>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Asistencia Conferencia</span>
+                <div id="kpiGeneral" class="text-4xl font-black text-emerald-600 mt-2">0</div>
+                <span id="kpiPorcentajeGeneral" class="text-xs text-gray-500 mt-1 block">0% del total de inscritos</span>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Asistencia a Talleres</span>
+                <div id="kpiTalleres" class="text-4xl font-black text-indigo-600 mt-2">0</div>
+                <span id="kpiPorcentajeTalleres" class="text-xs text-gray-500 mt-1 block">0% del total de inscritos</span>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Talleres Activos</span>
+                <div id="kpiTotalTalleres" class="text-4xl font-black text-purple-600 mt-2">0</div>
+                <span class="text-xs text-gray-500 mt-1 block">Opciones disponibles</span>
+            </div>
+        </div>
+
+        <!-- BUSCADOR RÁPIDO DE ALUMNOS -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+            <h3 class="text-lg font-bold text-cesba-blue">Buscador de Alumnos</h3>
+            <div class="flex gap-4">
+                <input type="text" id="inputBuscarAlumno" placeholder="Ingresa matrícula o nombre..." class="flex-grow p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple" onkeyup="filtrarAlumnosGlobal()">
+            </div>
+            <div id="resultadoBusquedaGlobal" class="hidden overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-600">
+                    <thead class="text-xs uppercase bg-gray-100 text-gray-700">
+                        <tr>
+                            <th class="p-3">Matrícula</th>
+                            <th class="p-3">Nombre</th>
+                            <th class="p-3">Taller Asignado</th>
+                            <th class="p-3">Gral (Entrada)</th>
+                            <th class="p-3">Taller (Aula)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaBusquedaBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LISTADO Y DESGLOSE POR TALLER -->
+        <div class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-cesba-blue">Estado de Talleres y Listas Oficiales</h3>
+            </div>
+
+            <div id="contenedorTalleres" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        </div>
+    </main>
+
+    <!-- ELEMENTO OCULTO CONTENEDOR PARA GENERACIÓN DE PDF -->
+    <div id="areaImpresionPDF" class="hidden p-8 bg-white text-black"></div>
+
+    <script>
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
+        const MILS_8_HORAS = 8 * 60 * 60 * 1000;
+        let datosGlobales = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sesion = obtenerSesionAdminValida();
+            if (sesion) {
+                mostrarDashboard(sesion);
+            }
+        });
+
+        function obtenerSesionAdminValida() {
+            const data = localStorage.getItem('cesba_admin_session');
+            if (!data) return null;
+            const obj = JSON.parse(data);
+            if (Date.now() - obj.timestamp < MILS_8_HORAS) return obj.correo;
+            localStorage.removeItem('cesba_admin_session');
+            return null;
+        }
+
+        function ejecutarLoginAdmin() {
+            const correo = document.getElementById('adminCorreo').value;
+            const pass = document.getElementById('adminPass').value;
+            const msg = document.getElementById('msgLogin');
+            const btn = document.getElementById('btnLogin');
+
+            if (!correo || !pass) {
+                msg.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
+                msg.innerText = "Ingresa usuario y contraseña.";
+                msg.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Verificando...";
+
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'adminLogin', correoAdmin: correo, passwordAdmin: pass })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'éxito') {
+                    localStorage.setItem('cesba_admin_session', JSON.stringify({ correo: correo, timestamp: Date.now() }));
+                    msg.classList.add('hidden');
+                    mostrarDashboard(correo);
+                } else {
+                    msg.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
+                    msg.innerText = data.mensaje;
+                    msg.classList.remove('hidden');
+                }
+            })
+            .catch(() => {
+                msg.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
+                msg.innerText = "Error al autenticar con el servidor.";
+                msg.classList.remove('hidden');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "Ingresar al Panel";
+            });
+        }
+
+        function mostrarDashboard(correo) {
+            document.getElementById('vistaLogin').classList.add('hidden');
+            document.getElementById('vistaDashboard').classList.remove('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('flex');
+            document.getElementById('labelAdminCorreo').innerText = correo;
+            recargarDatos();
+        }
+
+        function cerrarSesionAdmin() {
+            localStorage.removeItem('cesba_admin_session');
+            location.reload();
+        }
+
+        function recargarDatos() {
+            const correo = obtenerSesionAdminValida();
+            if (!correo) { cerrarSesionAdmin(); return; }
+
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'adminData', correoAdmin: correo })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === 'éxito') {
+                    datosGlobales = res.data;
+                    renderizarDashboard(res.data);
+                } else {
+                    alert(res.mensaje);
+                }
+            });
+        }
+
+        function renderizarDashboard(data) {
+            // KPIs
+            const ins = data.resumen.totalInscritos;
+            const gen = data.resumen.asistenciaGeneral;
+            const tal = data.resumen.asistenciaTalleres;
+
+            document.getElementById('kpiInscritos').innerText = ins;
+            document.getElementById('kpiGeneral').innerText = gen;
+            document.getElementById('kpiTalleres').innerText = tal;
+            document.getElementById('kpiTotalTalleres').innerText = data.talleres.length;
+
+            const pctGen = ins > 0 ? Math.round((gen / ins) * 100) : 0;
+            const pctTal = ins > 0 ? Math.round((tal / ins) * 100) : 0;
+
+            document.getElementById('kpiPorcentajeGeneral').innerText = `${pctGen}% de asistencia a entrada`;
+            document.getElementById('kpiPorcentajeTalleres').innerText = `${pctTal}% de asistencia a talleres`;
+
+            // Talleres
+            const contenedor = document.getElementById('contenedorTalleres');
+            contenedor.innerHTML = '';
+
+            data.talleres.forEach(taller => {
+                const pctOcupacion = taller.cupoMaximo > 0 ? Math.round((taller.inscritos / taller.cupoMaximo) * 100) : 0;
+                
+                const card = `
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-2.5 py-1 rounded-md uppercase">${taller.id}</span>
+                                <h4 class="text-lg font-bold text-gray-900 mt-1">${taller.nombre}</h4>
+                                <p class="text-xs text-gray-500">👨‍🏫 Instructor: ${taller.instructor}</p>
+                            </div>
+                            <button onclick="descargarPDFTaller('${taller.id}')" class="bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 shadow-sm">
+                                📄 Exportar PDF
+                            </button>
+                        </div>
+
+                        <!-- Barra de Cupo -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
+                                <span>Inscritos: ${taller.inscritos} / ${taller.cupoMaximo}</span>
+                                <span>${pctOcupacion}% Ocupado</span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-cesba-primary h-2.5 rounded-full" style="width: ${pctOcupacion}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-métricas Taller -->
+                        <div class="grid grid-cols-2 gap-2 text-center pt-2 border-t text-xs">
+                            <div class="bg-emerald-50 p-2 rounded-lg border border-emerald-100">
+                                <span class="block font-bold text-emerald-700">${taller.asistieronTaller} Alumnos</span>
+                                <span class="text-emerald-600">Asistieron a Taller</span>
+                            </div>
+                            <div class="bg-rose-50 p-2 rounded-lg border border-rose-100">
+                                <span class="block font-bold text-rose-700">${taller.inscritos - taller.asistieronTaller} Alumnos</span>
+                                <span class="text-rose-600">Faltantes</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                contenedor.innerHTML += card;
+            });
+        }
+
+        // Buscador Global
+        function filtrarAlumnosGlobal() {
+            const query = document.getElementById('inputBuscarAlumno').value.toLowerCase().trim();
+            const resDiv = document.getElementById('resultadoBusquedaGlobal');
+            const body = document.getElementById('tablaBusquedaBody');
+
+            if (!query || !datosGlobales) {
+                resDiv.classList.add('hidden');
+                return;
+            }
+
+            body.innerHTML = '';
+            let contador = 0;
+
+            datosGlobales.talleres.forEach(t => {
+                t.alumnos.forEach(a => {
+                    if (a.matricula.toString().toLowerCase().includes(query) || a.nombre.toLowerCase().includes(query)) {
+                        contador++;
+                        body.innerHTML += `
+                            <tr class="border-b">
+                                <td class="p-3 font-bold">${a.matricula}</td>
+                                <td class="p-3">${a.nombre}</td>
+                                <td class="p-3 font-semibold text-cesba-primary">${t.nombre}</td>
+                                <td class="p-3">${a.asistioGeneral ? '✅ ' + a.horaGeneral : '❌'}</td>
+                                <td class="p-3">${a.asistioTaller ? '✅ ' + a.horaTaller : '❌'}</td>
+                            </tr>
+                        `;
+                    }
+                });
+            });
+
+            if (contador > 0) resDiv.classList.remove('hidden');
+            else resDiv.classList.add('hidden');
+        }
+
+        // GENERACIÓN DE PDF OFICIAL DE ASISTENCIA POR TALLER
+        function descargarPDFTaller(idTaller) {
+            if (!datosGlobales) return;
+
+            const taller = datosGlobales.talleres.find(t => t.id === idTaller);
+            if (!taller) return;
+
+            const area = document.getElementById('areaImpresionPDF');
+            
+            let filasHTML = '';
+            taller.alumnos.forEach((al, index) => {
+                filasHTML += `
+                    <tr style="border-bottom: 1px solid #ddd; font-size: 11px;">
+                        <td style="padding: 8px;">${index + 1}</td>
+                        <td style="padding: 8px; font-weight: bold;">${al.matricula}</td>
+                        <td style="padding: 8px;">${al.nombre}</td>
+                        <td style="padding: 8px; text-align: center;">${al.asistioTaller ? 'ASISTIÓ (' + al.horaTaller + ')' : 'FALTA'}</td>
+                        <td style="padding: 8px; width: 120px; border-bottom: 1px dashed #999;"></td>
+                    </tr>
+                `;
+            });
+
+            area.innerHTML = `
+                <div style="font-family: Arial, sans-serif; color: #111;">
+                    <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; margin-bottom: 15px;">
+                        <h2 style="margin: 0; color: #1e3a8a;">CENTRO DE ESTUDIOS SUPERIORES DEL BAJÍO</h2>
+                        <h3 style="margin: 5px 0 0 0; color: #555;">Lista de Asistencia - Jornada Tecnológica 2026</h3>
+                    </div>
+
+                    <table style="width: 100%; margin-bottom: 15px; font-size: 12px; background: #f9f9f9; padding: 10px; border-radius: 5px;">
+                        <tr>
+                            <td><b>Taller:</b> ${taller.id} - ${taller.nombre}</td>
+                            <td><b>Instructor:</b> ${taller.instructor}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Inscritos:</b> ${taller.inscritos} alumnos</td>
+                            <td><b>Asistencias en Aula:</b> ${taller.asistieronTaller} alumnos</td>
+                        </tr>
+                    </table>
+
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="background: #1e3a8a; color: white; font-size: 11px;">
+                                <th style="padding: 8px;">#</th>
+                                <th style="padding: 8px;">Matrícula</th>
+                                <th style="padding: 8px;">Nombre del Alumno</th>
+                                <th style="padding: 8px; text-align: center;">Estatus Taller</th>
+                                <th style="padding: 8px;">Firma de Conformidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filasHTML || '<tr><td colspan="5" style="text-align:center; padding:10px;">Sin alumnos inscritos.</td></tr>'}
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 30px; text-align: right; font-size: 10px; color: #777;">
+                        Reporte generado el ${new Date().toLocaleString('es-MX')} • Mtro. César Terrazas Zarazúa
+                    </div>
+                </div>
+            `;
+
+            const opt = {
+                margin:       10,
+                filename:     `Lista_Asistencia_${taller.id}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(area).save();
+        }
+    </script>
+</body>
+</html>
