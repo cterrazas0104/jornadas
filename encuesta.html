@@ -27,7 +27,6 @@
 
     <main class="max-w-2xl mx-auto space-y-6">
         
-        <!-- HEADER ENCABEZADO -->
         <div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-cesba-primary via-cesba-purple to-indigo-600"></div>
             <h1 class="text-3xl font-black text-cesba-blue mb-2">Tu Opinión sobre la Jornada Tecnológica 2026</h1>
@@ -36,15 +35,12 @@
             </p>
         </div>
 
-        <!-- CARGANDO / VERIFICANDO -->
         <div id="pantallaCarga" class="bg-white rounded-3xl p-8 shadow-lg text-center font-bold text-gray-500">
             ⏳ Verificando tus datos de asistencia...
         </div>
 
-        <!-- FORMULARIO DE ENCUESTA -->
         <form id="formEncuesta" class="hidden space-y-6">
 
-            <!-- SECCIÓN 1: EVALUACIÓN GENERAL -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
                 <h2 class="text-lg font-bold text-cesba-blue">1. ¿Cómo calificarías la jornada en general? *</h2>
                 
@@ -71,7 +67,6 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 2: LO QUE MÁS GUSTÓ -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
                 <h2 class="text-lg font-bold text-cesba-blue">2. Dejando a un lado los talleres, ¿qué fue lo que más te gustó? *</h2>
                 
@@ -95,7 +90,6 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 3: TALLERISTA (AUTO-IDENTIFICADO) -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
                 <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 mb-4">
                     <span class="text-xs font-bold text-cesba-primary uppercase tracking-wider block">Taller que cursaste:</span>
@@ -128,7 +122,6 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 4: IDEAS PARA EL FUTURO -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
                 <h2 class="text-lg font-bold text-cesba-blue">4. Ideas para el Futuro</h2>
 
@@ -148,7 +141,6 @@
             </button>
         </form>
 
-        <!-- PANTALLA MENSAJE FINAL -->
         <div id="pantallaMensaje" class="hidden bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center space-y-4">
             <h2 id="msgTitulo" class="text-2xl font-black text-cesba-blue"></h2>
             <p id="msgCuerpo" class="text-sm text-gray-600"></p>
@@ -197,7 +189,6 @@
             btn.disabled = true;
             btn.innerText = "Guardando respuestas...";
 
-            // Recopilar selecciones múltiples
             const gustosCheckboxes = document.querySelectorAll('input[name="loQueMasGusto"]:checked');
             let loQueMasGustoArr = [];
             gustosCheckboxes.forEach(cb => loQueMasGustoArr.push(cb.value));
