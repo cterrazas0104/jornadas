@@ -558,13 +558,16 @@
         }
 
         // BEEP SONORO AL DETECTAR QR
-        function reproducirBeep() {
+function reproducirBeep() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume(); // Despierta el motor de audio en iPad/iOS/Laptops
+                }
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = "sine";
-                osc.frequency.value = 880; // Tono agudo claro
+                osc.frequency.value = 880; // Tono agudo tipo escáner de supermercado
                 gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
