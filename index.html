@@ -135,7 +135,6 @@
             </div>
 
             <div class="space-y-6">
-                <!-- Ítem Agenda -->
                 <div class="flex flex-col md:flex-row items-start md:items-center bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:border-cesba-purple transition">
                     <div class="w-32 font-black text-cesba-primary text-lg mb-2 md:mb-0">07:30 - 07:50</div>
                     <div class="md:ml-6 flex-grow">
@@ -196,9 +195,7 @@
                 <div class="w-16 h-1 bg-cesba-purple mx-auto mt-4 rounded-full"></div>
             </div>
 
-            <!-- Grid de Talleres desde Apps Script -->
             <div id="grid-talleres" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Skeleton de Carga -->
                 <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
@@ -206,7 +203,7 @@
         </div>
     </section>
 
-    <!-- FORMULARIO DE REGISTRO -->
+    <!-- FORMULARIO DE REGISTRO DE ALUMNOS -->
     <section id="registro" class="py-20 bg-white">
         <div class="max-w-xl mx-auto px-4">
             <div class="bg-white rounded-3xl border border-gray-200 shadow-2xl p-8 md:p-10 relative overflow-hidden">
@@ -269,47 +266,71 @@
     <footer class="bg-black text-gray-500 py-10 text-center border-t border-white/10">
         <div class="max-w-4xl mx-auto px-4 space-y-4">
             <p class="text-sm">Centro de Estudios Superiores del Bajío • Campus Querétaro 2026</p>
-            <p class="text-xs text-gray-600">César Terrazas Zarazúa 2026</p>
-            <button onclick="mostrarEscaner()" class="text-xs text-cesba-purple hover:underline focus:outline-none">
+            <button onclick="abrirModalDocente()" class="text-xs text-cesba-purple hover:underline focus:outline-none font-bold">
                 🔒 Acceso exclusivo para Docentes (Control de Asistencia)
             </button>
         </div>
     </footer>
 
-    <!-- MODAL ESCÁNER DOCENTES -->
-    <div id="modalEscaner" class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <!-- MODAL DOCENTES (LOGIN + ESCÁNER) -->
+    <div id="modalDocente" class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="cerrarEscaner()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-700">
+            <button onclick="cerrarModalDocente()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-700 font-bold text-xl">
                 ✕
             </button>
-            
-            <h3 class="text-2xl font-bold text-cesba-blue mb-1">Pase de Asistencia</h3>
-            <p class="text-xs text-gray-500 mb-6">Escáner de códigos QR para la Jornada 2026</p>
-            
-            <div class="space-y-4 mb-6">
+
+            <!-- FORMULARIO DE LOGIN DOCENTE -->
+            <div id="vistaLogin" class="space-y-4">
+                <h3 class="text-2xl font-black text-cesba-blue">Acceso Docente</h3>
+                <p class="text-xs text-gray-500">Ingresa tus credenciales para activar el escáner (sesión activa por 8 horas).</p>
+                
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Correo Docente</label>
-                    <input type="email" id="emailDocente" placeholder="correo@cesba-queretaro.edu.mx" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Correo Institucional</label>
+                    <input type="email" id="loginCorreo" placeholder="docente@cesba-queretaro.edu.mx" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
                 </div>
+
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Momento de Registro</label>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                </div>
+
+                <button id="btnLogin" onclick="ejecutarLoginDocente()" class="w-full bg-cesba-blue hover:bg-cesba-primary text-white font-bold py-3.5 rounded-xl transition text-sm">
+                    Iniciar Sesión
+                </button>
+
+                <div id="msgLogin" class="text-xs text-center font-bold hidden p-3 rounded-lg"></div>
+            </div>
+
+            <!-- ESCÁNER ACTIVO -->
+            <div id="vistaEscaner" class="hidden space-y-4">
+                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                    <div>
+                        <span class="text-xs text-emerald-600 font-bold block">● Sesión Activa</span>
+                        <span id="labelDocenteCorreo" class="text-xs text-gray-500 font-medium"></span>
+                    </div>
+                    <button onclick="cerrarSesionDocente()" class="text-xs text-rose-600 hover:underline font-bold">Cerrar Sesión</button>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Momento de Pase de Asistencia</label>
                     <select id="tipoAsistencia" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
                         <option value="general">1. Conferencia General (Entrada)</option>
                         <option value="taller">2. Taller Específico (Aula)</option>
                     </select>
                 </div>
-            </div>
 
-            <div id="reader" class="rounded-2xl overflow-hidden border-2 border-dashed border-gray-300"></div>
-            <div id="resultadoEscaner" class="mt-4 p-4 text-center rounded-xl font-bold hidden text-sm"></div>
+                <div id="reader" class="rounded-2xl overflow-hidden border-2 border-dashed border-gray-300"></div>
+                <div id="resultadoEscaner" class="mt-2 p-3 text-center rounded-xl font-bold hidden text-sm"></div>
+            </div>
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL -->
+    <!-- SCRIPTS -->
     <script>
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
+        let html5QrcodeScanner = null;
 
-        // Cargar catálogo de talleres dinámico
+        // Cargar Catálogo de Talleres
         document.addEventListener('DOMContentLoaded', () => {
             fetch(apiUrl)
             .then(res => res.json())
@@ -323,13 +344,11 @@
                 const talleresValidos = talleres.filter(t => t.ID_Taller);
 
                 talleresValidos.forEach(taller => {
-                    // Opción para Select
                     let option = document.createElement('option');
                     option.value = taller.ID_Taller;
                     option.text = `${taller.ID_Taller} - ${taller.Nombre}`;
                     select.appendChild(option);
 
-                    // Tarjeta Visual
                     const instructor = taller.Instructor || 'Docente de Sistemas';
                     const tarjeta = `
                         <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between">
@@ -358,7 +377,7 @@
             window.location.href = '#registro';
         }
 
-        // Lógica de Envío del Formulario
+        // Formulario Registro de Alumnos
         document.getElementById('registroForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
@@ -394,13 +413,107 @@
             });
         });
 
-        // Escáner Modal
-        let html5QrcodeScanner = null;
+        // ==========================================
+        // GESTIÓN DE SESIÓN DOCENTE (8 HORAS)
+        // ==========================================
+        const MILS_8_HORAS = 8 * 60 * 60 * 1000;
 
-        function mostrarEscaner() {
-            document.getElementById('modalEscaner').classList.remove('hidden');
-            document.getElementById('modalEscaner').classList.add('flex');
+        function obtenerSesionValida() {
+            const sessionData = localStorage.getItem('cesba_docente_session');
+            if (!sessionData) return null;
             
+            const session = JSON.parse(sessionData);
+            const ahorta = Date.now();
+            
+            if (ahorta - session.timestamp < MILS_8_HORAS) {
+                return session.correo;
+            } else {
+                localStorage.removeItem('cesba_docente_session');
+                return null;
+            }
+        }
+
+        function abrirModalDocente() {
+            document.getElementById('modalDocente').classList.remove('hidden');
+            document.getElementById('modalDocente').classList.add('flex');
+            
+            const correoActivo = obtenerSesionValida();
+            if (correoActivo) {
+                mostrarVistaEscaner(correoActivo);
+            } else {
+                mostrarVistaLogin();
+            }
+        }
+
+        function cerrarModalDocente() {
+            document.getElementById('modalDocente').classList.add('hidden');
+            document.getElementById('modalDocente').classList.remove('flex');
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+                html5QrcodeScanner = null;
+            }
+        }
+
+        function ejecutarLoginDocente() {
+            const correo = document.getElementById('loginCorreo').value;
+            const pass = document.getElementById('loginPassword').value;
+            const msgDiv = document.getElementById('msgLogin');
+            const btn = document.getElementById('btnLogin');
+
+            if (!correo || !pass) {
+                msgDiv.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
+                msgDiv.innerText = "Ingresa correo y contraseña.";
+                msgDiv.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Verificando...";
+
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'login',
+                    correoDocente: correo,
+                    passwordDocente: pass
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'éxito') {
+                    localStorage.setItem('cesba_docente_session', JSON.stringify({
+                        correo: correo,
+                        timestamp: Date.now()
+                    }));
+                    msgDiv.classList.add('hidden');
+                    mostrarVistaEscaner(correo);
+                } else {
+                    msgDiv.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
+                    msgDiv.innerText = data.mensaje;
+                    msgDiv.classList.remove('hidden');
+                }
+            })
+            .catch(() => {
+                msgDiv.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
+                msgDiv.innerText = "Error de conexión al autenticar.";
+                msgDiv.classList.remove('hidden');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "Iniciar Sesión";
+            });
+        }
+
+        function mostrarVistaLogin() {
+            document.getElementById('vistaLogin').classList.remove('hidden');
+            document.getElementById('vistaEscaner').classList.add('hidden');
+        }
+
+        function mostrarVistaEscaner(correo) {
+            document.getElementById('vistaLogin').classList.add('hidden');
+            document.getElementById('vistaEscaner').classList.remove('hidden');
+            document.getElementById('labelDocenteCorreo').innerText = correo;
+
             if (!html5QrcodeScanner) {
                 html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
                     fps: 20, 
@@ -411,14 +524,22 @@
             }
         }
 
-        function cerrarEscaner() {
-            document.getElementById('modalEscaner').classList.add('hidden');
-            document.getElementById('modalEscaner').classList.remove('flex');
+        function cerrarSesionDocente() {
+            localStorage.removeItem('cesba_docente_session');
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+                html5QrcodeScanner = null;
+            }
+            mostrarVistaLogin();
         }
 
         function onScanSuccess(decodedText) {
-            const correo = document.getElementById('emailDocente').value;
-            if (!correo) { alert("Ingresa tu correo institucional"); return; }
+            const correoDocente = obtenerSesionValida();
+            if (!correoDocente) {
+                alert("La sesión ha expirado. Inicia sesión nuevamente.");
+                cerrarSesionDocente();
+                return;
+            }
 
             const partes = decodedText.split('-');
             const matricula = partes.length > 1 ? partes[1] : decodedText;
@@ -428,7 +549,7 @@
                 body: JSON.stringify({
                     action: 'asistencia',
                     matricula: matricula,
-                    correoDocente: correo,
+                    correoDocente: correoDocente,
                     tipo: document.getElementById('tipoAsistencia').value
                 })
             })
@@ -436,10 +557,10 @@
             .then(data => {
                 const resDiv = document.getElementById('resultadoEscaner');
                 resDiv.innerText = data.mensaje;
-                resDiv.className = "mt-4 p-4 text-center rounded-xl font-bold text-white " + 
+                resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white " + 
                     (data.status === 'éxito' ? 'bg-emerald-600' : 'bg-rose-600');
                 resDiv.classList.remove('hidden');
-                setTimeout(() => resDiv.classList.add('hidden'), 2500);
+                setTimeout(() => resDiv.classList.add('hidden'), 2200);
             });
         }
     </script>
