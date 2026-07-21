@@ -186,19 +186,21 @@
         </div>
     </section>
 
-    <!-- CATALOGO DE TALLERES DINÁMICO -->
+    <!-- CATALOGO DE TALLERES DINÁMICO CON REQUISITOS DETALLADOS -->
     <section id="talleres" class="py-20 bg-gray-50 border-t border-gray-200">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-extrabold text-cesba-blue">Catálogo de Talleres</h2>
-                <p class="text-gray-500 mt-2">Selecciona la tecnología que deseas dominar este año</p>
+                <p class="text-gray-500 mt-2">Revisa los requerimientos técnicos e inscríbete al taller de tu elección</p>
                 <div class="w-16 h-1 bg-cesba-purple mx-auto mt-4 rounded-full"></div>
             </div>
 
+            <!-- Grid de Talleres desde Apps Script -->
             <div id="grid-talleres" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-64 border border-gray-200"></div>
+                <!-- Skeleton de Carga -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-80 border border-gray-200"></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-80 border border-gray-200"></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm animate-pulse h-80 border border-gray-200"></div>
             </div>
         </div>
     </section>
@@ -262,12 +264,12 @@
         </div>
     </section>
 
-<!-- FOOTER -->
+    <!-- FOOTER -->
     <footer class="bg-black text-gray-500 py-10 text-center border-t border-white/10">
         <div class="max-w-4xl mx-auto px-4 space-y-3">
             <p class="text-sm">Centro de Estudios Superiores del Bajío • Campus Querétaro 2026</p>
             <p class="text-xs text-gray-400 font-medium tracking-wide">
-                © 2026 Mtro. César G. Terrazas Zarazúa. Todos los derechos reservados.
+                © 2026 Mtro. César Terrazas Zarazúa. Todos los derechos reservados.
             </p>
             <div class="pt-2">
                 <button onclick="abrirModalDocente()" class="text-xs text-cesba-purple hover:underline focus:outline-none font-bold">
@@ -335,7 +337,7 @@
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
         let html5QrcodeScanner = null;
 
-        // Cargar Catálogo de Talleres
+        // CARGAR CATÁLOGO DE TALLERES Y REQUISITOS
         document.addEventListener('DOMContentLoaded', () => {
             fetch(apiUrl)
             .then(res => res.json())
@@ -355,25 +357,44 @@
                     select.appendChild(option);
 
                     const instructor = taller.Instructor || 'Docente de Sistemas';
+                    const requisitos = taller.Requisitos || 'Sin requisitos especiales de hardware/software.';
+
+                    // Tarjeta Visual con Sección de Requisitos
                     const tarjeta = `
-                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between">
+                        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full">
                             <div>
-                                <div class="flex justify-between items-center mb-4">
+                                <div class="flex justify-between items-center mb-3">
                                     <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-3 py-1 rounded-full uppercase">${taller.ID_Taller}</span>
-                                    <span class="text-xs font-medium text-gray-400">Cupo: ${taller.Cupo_Maximo}</span>
+                                    <span class="text-xs font-bold text-gray-500 bg-gray-100 px-2.5 py-1 rounded-lg">Cupo: ${taller.Cupo_Maximo}</span>
                                 </div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">${taller.Nombre}</h3>
-                                <p class="text-sm font-medium text-cesba-primary mb-4">👨‍🏫 ${instructor}</p>
+                                <h3 class="text-xl font-extrabold text-cesba-blue mb-1">${taller.Nombre}</h3>
+                                <p class="text-xs font-bold text-cesba-primary mb-4">👨‍🏫 Instructor: ${instructor}</p>
+                                
+                                <!-- CAJA DESTACADA DE REQUISITOS -->
+                                <div class="bg-purple-50/60 rounded-2xl p-4 border border-purple-100 text-xs text-gray-700 mb-6 space-y-1">
+                                    <span class="font-extrabold text-cesba-primary block uppercase tracking-wider text-[10px] mb-1 flex items-center gap-1">
+                                        💻 Requisitos del Taller:
+                                    </span>
+                                    <p class="leading-relaxed font-medium">${requisitos}</p>
+                                </div>
                             </div>
+
                             <div class="pt-4 border-t border-gray-100 flex justify-end">
-                                <button onclick="elegirTaller('${taller.ID_Taller}')" class="text-sm font-bold text-cesba-purpleDark hover:text-cesba-primary transition">
-                                    Seleccionar Taller →
+                                <button onclick="elegirTaller('${taller.ID_Taller}')" class="w-full bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold py-3 px-4 rounded-xl transition duration-300 shadow-sm flex items-center justify-center gap-2">
+                                    Inscribirme a este Taller →
                                 </button>
                             </div>
                         </div>
                     `;
                     grid.innerHTML += tarjeta;
                 });
+            })
+            .catch(() => {
+                document.getElementById('grid-talleres').innerHTML = `
+                    <div class="col-span-full text-center py-10">
+                        <p class="text-sm font-bold text-rose-600">No se pudieron cargar los talleres. Por favor refresca la página.</p>
+                    </div>
+                `;
             });
         });
 
@@ -382,7 +403,7 @@
             window.location.href = '#registro';
         }
 
-       // Formulario Registro de Alumnos
+        // Formulario Registro de Alumnos
         document.getElementById('registroForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
@@ -405,7 +426,6 @@
                     mensajeArea.innerText = data.mensaje;
                     this.reset();
                 } else {
-                    // Diseño tipo "Aviso / Advertencia" (Amarillo/Ámbar) sin anteponer "Error:"
                     mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 shadow-sm";
                     mensajeArea.innerText = "⚠️ " + data.mensaje;
                 }
@@ -422,9 +442,7 @@
             });
         });
 
-        // ==========================================
         // GESTIÓN DE SESIÓN DOCENTE (8 HORAS)
-        // ==========================================
         const MILS_8_HORAS = 8 * 60 * 60 * 1000;
 
         function obtenerSesionValida() {
@@ -432,9 +450,7 @@
             if (!sessionData) return null;
             
             const session = JSON.parse(sessionData);
-            const ahorta = Date.now();
-            
-            if (ahorta - session.timestamp < MILS_8_HORAS) {
+            if (Date.now() - session.timestamp < MILS_8_HORAS) {
                 return session.correo;
             } else {
                 localStorage.removeItem('cesba_docente_session');
