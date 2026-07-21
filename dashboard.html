@@ -143,6 +143,25 @@
             <!-- LISTADO Y DESGLOSE POR TALLER -->
             <div class="space-y-6">
                 <h3 class="text-xl font-bold text-cesba-blue">Estado de Talleres y Listas Oficiales</h3>
+                <!-- BARRAS DE ACCIÓN DE TALLERES (LAYOUT Y CARGA CSV) -->
+<div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div>
+        <h4 class="font-bold text-cesba-blue text-base">Gestión de Oferta Académica y Requisitos</h4>
+        <p class="text-xs text-gray-500">Descarga la plantilla oficial para editar la lista de talleres o sube el archivo actualizado.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+        <!-- Botón Descargar Layout -->
+        <button onclick="descargarPlantillaTalleres()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5">
+            📥 Descargar Plantilla (CSV)
+        </button>
+
+        <!-- Formulario Cargar Layout -->
+        <label class="bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer flex items-center gap-1.5">
+            📤 Subir Archivo CSV
+            <input type="file" id="inputCSV" accept=".csv" class="hidden" onchange="procesarCSV(this)">
+        </label>
+    </div>
+</div>
                 <div id="contenedorTalleres" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
             </div>
         </div>
@@ -524,6 +543,74 @@
                 .catch(() => alert("Error al procesar el envío masivo."));
             }
         }
+        // 1. DESCARGAR PLANTILLA / LAYOUT EN FORMATO CSV
+function descargarPlantillaTalleres() {
+    let csvContent = "\uFEFF"; // UTF-8 BOM para soporte de acentos en Excel
+    csvContent += "ID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos\n";
+    csvContent += "T01,Introducción a los Contenedores,Guillermo Pucheta,25,\"Laptop con Windows 10/11 o macOS, 8GB RAM, Virtualization activa en BIOS.\"\n";
+    csvContent += "T02,MongoDB,Mtro. César Terrazas,30,\"Laptop con VirtualBox instalado y 30GB libres en disco duro.\"\n";
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "Plantilla_Oferta_Talleres_2026.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// 2. LEER Y SUBIR ARCHIVO CSV AL SERVIDOR
+function procesarCSV(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        const lineas = text.split(/\r\n|\n/);
+        let matriz = [];
+
+        for (let i = 0; i < lineas.length; i++) {
+            if (lineas[i].trim() !== '') {
+                // Regex para respetar comas dentro de textos entre comillas
+                const columnas = lineas[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lineas[i].split(',');
+                const filaLimpia = columnas.map(col => col.replace(/^"|"$/g, '').trim());
+                matriz.push(filaLimpia);
+            }
+        }
+
+        if (matriz.length < 2) {
+            alert("El archivo CSV no contiene información válida.");
+            return;
+        }
+
+        if (confirm(`¿Confirmas que deseas actualizar la oferta con ${matriz.length - 1} talleres? Esto sobrescribirá la lista actual.`)) {
+            const correo = obtenerSesionAdminValida();
+            
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'actualizarTalleresCSV',
+                    correoAdmin: correo,
+                    matrizTalleres: matriz
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'éxito') {
+                    alert("¡Éxito! " + data.mensaje);
+                    recargarDatos(); // Refresca las tarjetas en pantalla
+                } else {
+                    alert("Error: " + data.mensaje);
+                }
+            })
+            .catch(() => alert("Error de red al intentar actualizar los talleres."));
+        }
+    };
+
+    reader.readAsText(file, "UTF-8");
+}
     </script>
 </body>
 </html>
