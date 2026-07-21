@@ -42,6 +42,41 @@
                     <span id="labelAdminCorreo" class="text-xs text-purple-200 font-medium"></span>
                     <button onclick="recargarDatos()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition">🔄 Actualizar</button>
                     <button onclick="cerrarSesionAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">Salir</button>
+<button onclick="dispararEncuestas()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-md flex items-center gap-2">
+    📩 Enviar Encuestas de Satisfacción
+</button>
+
+<script>
+function dispararEncuestas() {
+    // Detecta automáticamente el dominio del servidor actual para construir el enlace a encuesta.html
+    const defaultUrl = window.location.origin + window.location.pathname.replace('dashboard.html', 'encuesta.html');
+    const baseUrlEncuesta = prompt("Confirma la URL pública de la encuesta en tu sitio:", defaultUrl);
+    
+    if (!baseUrlEncuesta) return;
+
+    if (confirm("¿Confirmas que deseas enviar el correo con la encuesta a TODOS los alumnos que registraron asistencia hoy?")) {
+        const correo = obtenerSesionAdminValida();
+        
+        fetch(apiUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'enviarEncuestas',
+                correoAdmin: correo,
+                baseUrlEncuesta: baseUrlEncuesta
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'éxito') {
+                alert("¡Éxito! " + data.mensaje);
+            } else {
+                alert("Error: " + data.mensaje);
+            }
+        })
+        .catch(() => alert("Error al procesar el envío masivo."));
+    }
+}
+</script>
                 </div>
             </div>
         </div>
