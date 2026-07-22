@@ -41,22 +41,22 @@
                     <span class="font-bold text-lg hidden sm:inline">Jornada Tecnológica 2026</span>
                 </div>
                 
-<div id="userInfo" class="hidden items-center space-x-3">
-    <!-- Indicador de Auto-Actualización en Vivo -->
-    <div class="hidden lg:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-emerald-400 text-xs">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span id="lblUltimaActualizacion" class="font-medium">En vivo (Cada 60s)</span>
-    </div>
+                <div id="userInfo" class="hidden items-center space-x-3">
+                    <!-- Indicador de Auto-Actualización en Vivo -->
+                    <div class="hidden lg:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-emerald-400 text-xs">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span id="lblUltimaActualizacion" class="font-medium">En vivo (Cada 60s)</span>
+                    </div>
 
-    <span id="labelAdminCorreo" class="text-xs text-purple-200 font-medium hidden md:inline"></span>
-    
-    <button onclick="dispararEncuestas()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
-        📩 Enviar Encuestas
-    </button>
+                    <span id="labelAdminCorreo" class="text-xs text-purple-200 font-medium hidden md:inline"></span>
+                    
+                    <button onclick="dispararEncuestas()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
+                        📩 Enviar Encuestas
+                    </button>
 
-    <button onclick="recargarDatos()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition">🔄 Actualizar</button>
-    <button onclick="cerrarSesionAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg font-bold transition">Salir</button>
-</div>
+                    <button onclick="recargarDatos()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition">🔄 Actualizar</button>
+                    <button onclick="cerrarSesionAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">Salir</button>
+                </div>
             </div>
         </div>
     </nav>
@@ -175,7 +175,7 @@
         <!-- CONTENIDO PESTAÑA 2: RESULTADOS DE ENCUESTAS MEJORADO -->
         <div id="tabContentEncuestas" class="hidden space-y-8">
             
-            <!-- TARJETAS DE MÉTIRCAS GLOBALES DE ENCUESTA -->
+            <!-- TARJETAS DE MÉTIRICAS GLOBALES DE ENCUESTA -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                     <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Encuestas Contestadas</span>
@@ -221,7 +221,7 @@
                 </div>
             </div>
 
-            <!-- ANÁLISIS INDIVIDUAL POR TALLERISTA (MÁS RELEVANTE) -->
+            <!-- ANÁLISIS INDIVIDUAL POR TALLERISTA -->
             <div class="space-y-6">
                 <div class="flex justify-between items-center">
                     <div>
@@ -261,6 +261,7 @@
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
         const MILS_8_HORAS = 8 * 60 * 60 * 1000;
         let datosGlobales = null;
+        let intervaloAutoRefresh = null;
 
         let chartGralInstance = null;
         let chartGustoInstance = null;
@@ -328,17 +329,35 @@
             document.getElementById('userInfo').classList.remove('hidden');
             document.getElementById('userInfo').classList.add('flex');
             document.getElementById('labelAdminCorreo').innerText = correo;
+            
+            // Carga inicial
             recargarDatos();
+
+            // Auto-actualización constante en vivo cada 60 segundos
+            if (!intervaloAutoRefresh) {
+                intervaloAutoRefresh = setInterval(() => {
+                    recargarDatos(true);
+                }, 60000);
+            }
         }
 
         function cerrarSesionAdmin() {
+            if (intervaloAutoRefresh) {
+                clearInterval(intervaloAutoRefresh);
+                intervaloAutoRefresh = null;
+            }
             localStorage.removeItem('cesba_admin_session');
             location.reload();
         }
 
-        function recargarDatos() {
+        function recargarDatos(silencioso = false) {
             const correo = obtenerSesionAdminValida();
             if (!correo) { cerrarSesionAdmin(); return; }
+
+            const lblTime = document.getElementById('lblUltimaActualizacion');
+            if (lblTime && !silencioso) {
+                lblTime.innerText = "Sincronizando...";
+            }
 
             fetch(apiUrl, {
                 method: 'POST',
@@ -349,9 +368,17 @@
                 if (res.status === 'éxito') {
                     datosGlobales = res.data;
                     renderizarDashboard(res.data);
+                    
+                    if (lblTime) {
+                        const ahora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+                        lblTime.innerText = `En vivo (${ahora})`;
+                    }
                 } else {
-                    alert(res.mensaje);
+                    if (!silencioso) alert(res.mensaje);
                 }
+            })
+            .catch(() => {
+                if (lblTime) lblTime.innerText = "Error de conexión";
             });
         }
 
