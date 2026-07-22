@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuesta de Satisfacción | Jornada Tecnológica 2026</title>
+    <title>Encuesta y Constancia | Jornada Tecnológica 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script>
@@ -29,46 +29,53 @@
         
         <div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-cesba-primary via-cesba-purple to-indigo-600"></div>
-            <h1 class="text-3xl font-black text-cesba-blue mb-2">Tu Opinión sobre la Jornada Tecnológica 2026</h1>
+            
+            <div class="inline-block bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full text-xs mb-4">
+                Paso Final 🎓
+            </div>
+            
+            <h1 class="text-3xl font-black text-cesba-blue mb-2">Libera tu Constancia</h1>
             <p class="text-sm text-gray-600">
-                ¡Gracias por ser parte de esta jornada! Tu opinión es súper valiosa y nos ayudará a que la del 2027 sea aún mejor. Esta encuesta es anónima y te tomará menos de 2 minutos.
+                ¡Gracias por ser parte de la Jornada Tecnológica 2026! Completa esta breve evaluación anónima (toma menos de 1 minuto) para procesar tu constancia de participación.
             </p>
         </div>
 
         <div id="pantallaCarga" class="bg-white rounded-3xl p-8 shadow-lg text-center font-bold text-gray-500">
-            ⏳ Verificando tus datos de asistencia...
+            ⏳ Verificando tu expediente de asistencia...
         </div>
 
         <form id="formEncuesta" class="hidden space-y-6">
 
+            <!-- SECCIÓN 1: EVALUACIÓN GENERAL -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
                 <h2 class="text-lg font-bold text-cesba-blue">1. ¿Cómo calificarías la jornada en general? *</h2>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <label class="border-2 border-gray-200 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
+                    <label class="border-2 border-gray-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
                         <input type="radio" name="calificacionGeneral" value="¡Increíble! Superó mis expectativas." required class="accent-cesba-primary w-5 h-5">
                         <span class="text-sm font-medium">🚀 ¡Increíble! Superó mis expectativas.</span>
                     </label>
 
-                    <label class="border-2 border-gray-200 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
+                    <label class="border-2 border-gray-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
                         <input type="radio" name="calificacionGeneral" value="Estuvo muy bien, valió la pena." class="accent-cesba-primary w-5 h-5">
                         <span class="text-sm font-medium">🤩 Estuvo muy bien, valió la pena.</span>
                     </label>
 
-                    <label class="border-2 border-gray-200 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
+                    <label class="border-2 border-gray-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
                         <input type="radio" name="calificacionGeneral" value="Estuvo bien, pero hay áreas de mejora." class="accent-cesba-primary w-5 h-5">
                         <span class="text-sm font-medium">🧐 Estuvo bien, pero hay áreas de mejora.</span>
                     </label>
 
-                    <label class="border-2 border-gray-200 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
+                    <label class="border-2 border-gray-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3">
                         <input type="radio" name="calificacionGeneral" value="No fue lo que esperaba." class="accent-cesba-primary w-5 h-5">
                         <span class="text-sm font-medium">😟 No fue lo que esperaba.</span>
                     </label>
                 </div>
             </div>
 
+            <!-- SECCIÓN 2: LO QUE MÁS GUSTÓ -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
-                <h2 class="text-lg font-bold text-cesba-blue">2. Dejando a un lado los talleres, ¿qué fue lo que más te gustó? *</h2>
+                <h2 class="text-lg font-bold text-cesba-blue">2. Fuera de las aulas, ¿qué fue lo que más te gustó? *</h2>
                 
                 <div class="space-y-3">
                     <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-purple-50 transition">
@@ -77,11 +84,11 @@
                     </label>
                     <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-purple-50 transition">
                         <input type="checkbox" name="loQueMasGusto" value="La organización (registro, horarios, lugar)" class="accent-cesba-primary w-5 h-5">
-                        <span class="text-sm">📋 La organización (registro, horarios, logística)</span>
+                        <span class="text-sm">📋 La organización y logística</span>
                     </label>
                     <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-purple-50 transition">
                         <input type="checkbox" name="loQueMasGusto" value="El ambiente y la convivencia" class="accent-cesba-primary w-5 h-5">
-                        <span class="text-sm">🤝 El ambiente y convivencia fuera de clases</span>
+                        <span class="text-sm">🤝 El ambiente y convivencia con compañeros</span>
                     </label>
                     <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-purple-50 transition">
                         <input type="checkbox" name="loQueMasGusto" value="Los descansos" class="accent-cesba-primary w-5 h-5">
@@ -90,17 +97,18 @@
                 </div>
             </div>
 
+            <!-- SECCIÓN 3: EVALUACIÓN DE TALLERISTA -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
                 <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 mb-4">
-                    <span class="text-xs font-bold text-cesba-primary uppercase tracking-wider block">Taller que cursaste:</span>
+                    <span class="text-xs font-bold text-cesba-primary uppercase tracking-wider block">Taller evaluado:</span>
                     <h3 id="lblNombreTaller" class="text-lg font-black text-cesba-blue">Cargando...</h3>
                     <p id="lblInstructor" class="text-xs text-gray-600 font-medium">Instructor: Cargando...</p>
                 </div>
 
-                <h2 class="text-lg font-bold text-cesba-blue">3. Del 1 al 5, ¿qué tan claros fueron los temas que explicó el Tallerista? *</h2>
+                <h2 class="text-lg font-bold text-cesba-blue">3. ¿Qué tan útil y clara fue la explicación del Tallerista? *</h2>
                 
                 <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl">
-                    <span class="text-xs font-bold text-gray-500">Muy confuso</span>
+                    <span class="text-xs font-bold text-gray-500">Poco claro</span>
                     <div class="flex gap-4">
                         <label class="flex flex-col items-center gap-1 cursor-pointer"><input type="radio" name="claridadTallerista" value="1" required class="accent-cesba-primary w-5 h-5"><span class="text-xs font-bold">1</span></label>
                         <label class="flex flex-col items-center gap-1 cursor-pointer"><input type="radio" name="claridadTallerista" value="2" class="accent-cesba-primary w-5 h-5"><span class="text-xs font-bold">2</span></label>
@@ -108,42 +116,60 @@
                         <label class="flex flex-col items-center gap-1 cursor-pointer"><input type="radio" name="claridadTallerista" value="4" class="accent-cesba-primary w-5 h-5"><span class="text-xs font-bold">4</span></label>
                         <label class="flex flex-col items-center gap-1 cursor-pointer"><input type="radio" name="claridadTallerista" value="5" class="accent-cesba-primary w-5 h-5"><span class="text-xs font-bold">5</span></label>
                     </div>
-                    <span class="text-xs font-bold text-gray-500">¡Súper claro!</span>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">¿Qué otro taller te gustaría que impartiera este Tallerista?</label>
-                    <input type="text" id="otroTallerDeseado" placeholder="Tu respuesta..." class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">¿Tienes algún otro comentario sobre el Taller o el Tallerista?</label>
-                    <textarea id="comentarioTaller" rows="2" placeholder="Tu respuesta..." class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple"></textarea>
+                    <span class="text-xs font-bold text-gray-500">¡Excelente!</span>
                 </div>
             </div>
 
+            <!-- SECCIÓN 4: NUBE DE ETIQUETAS (IDEAS 2027) -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
-                <h2 class="text-lg font-bold text-cesba-blue">4. Ideas para el Futuro</h2>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Para la próxima Jornada Tecnológica, ¿qué tema o tecnología te M-U-E-R-E-S por ver?</label>
-                    <input type="text" id="temasFuturos" placeholder="Tu respuesta..." class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                <h2 class="text-lg font-bold text-cesba-blue">4. Para 2027, ¿qué tecnología te M-U-E-R-E-S por ver?</h2>
+                <p class="text-xs text-gray-500">Selecciona todas las que te interesen:</p>
+                
+                <div class="flex flex-wrap gap-2" id="contenedorTags">
+                    <!-- Los tags se generan por CSS y JS -->
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="temasFuturosTag" value="Inteligencia Artificial" class="hidden peer">
+                        <div class="px-4 py-2 rounded-full border border-gray-200 text-sm peer-checked:bg-cesba-primary peer-checked:text-white peer-checked:border-cesba-primary transition font-medium bg-gray-50">🤖 Inteligencia Artificial</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="temasFuturosTag" value="Ciberseguridad / Hacking" class="hidden peer">
+                        <div class="px-4 py-2 rounded-full border border-gray-200 text-sm peer-checked:bg-cesba-primary peer-checked:text-white peer-checked:border-cesba-primary transition font-medium bg-gray-50">🛡️ Ciberseguridad / Hacking</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="temasFuturosTag" value="Desarrollo Web / React" class="hidden peer">
+                        <div class="px-4 py-2 rounded-full border border-gray-200 text-sm peer-checked:bg-cesba-primary peer-checked:text-white peer-checked:border-cesba-primary transition font-medium bg-gray-50">🌐 Desarrollo Web (React/Angular)</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="temasFuturosTag" value="Videojuegos" class="hidden peer">
+                        <div class="px-4 py-2 rounded-full border border-gray-200 text-sm peer-checked:bg-cesba-primary peer-checked:text-white peer-checked:border-cesba-primary transition font-medium bg-gray-50">🎮 Creación de Videojuegos</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="temasFuturosTag" value="Domótica / IoT" class="hidden peer">
+                        <div class="px-4 py-2 rounded-full border border-gray-200 text-sm peer-checked:bg-cesba-primary peer-checked:text-white peer-checked:border-cesba-primary transition font-medium bg-gray-50">🏠 Domótica / IoT</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="temasFuturosTag" value="Cloud / AWS / Azure" class="hidden peer">
+                        <div class="px-4 py-2 rounded-full border border-gray-200 text-sm peer-checked:bg-cesba-primary peer-checked:text-white peer-checked:border-cesba-primary transition font-medium bg-gray-50">☁️ Cloud (AWS/Azure)</div>
+                    </label>
                 </div>
+                
+                <input type="text" id="otroTallerDeseado" placeholder="Otro tema o tecnología específica que quieras sugerir..." class="w-full mt-3 p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+            </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">¿Tienes alguna sugerencia sobre el evento?</label>
-                    <textarea id="sugerencias" rows="2" placeholder="Tu respuesta..." class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple"></textarea>
-                </div>
+            <!-- SECCIÓN 5: COMENTARIOS FINALES -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
+                <h2 class="text-lg font-bold text-cesba-blue">5. ¿Tienes algún otro comentario o sugerencia? (Opcional)</h2>
+                <textarea id="comentarioTaller" rows="3" placeholder="Comentarios sobre el tallerista, el internet, la organización, etc." class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple"></textarea>
             </div>
 
             <button id="btnEnviar" type="submit" class="w-full bg-cesba-primary hover:bg-blue-900 text-white font-bold py-4 rounded-2xl shadow-xl transition text-base">
-                Enviar Respuestas
+                Enviar y Solicitar Constancia
             </button>
         </form>
 
         <div id="pantallaMensaje" class="hidden bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center space-y-4">
-            <h2 id="msgTitulo" class="text-2xl font-black text-cesba-blue"></h2>
-            <p id="msgCuerpo" class="text-sm text-gray-600"></p>
+            <h2 id="msgTitulo" class="text-2xl font-black text-emerald-600"></h2>
+            <p id="msgCuerpo" class="text-base text-gray-600 font-medium"></p>
         </div>
 
     </main>
@@ -158,6 +184,7 @@
 
             if (!matricula) {
                 mostrarMensajeFinal("Enlace no válido", "Accede únicamente a través del enlace enviado a tu correo institucional.");
+                document.getElementById('msgTitulo').classList.replace('text-emerald-600', 'text-rose-600');
                 return;
             }
 
@@ -175,10 +202,12 @@
                     document.getElementById('formEncuesta').classList.remove('hidden');
                 } else {
                     mostrarMensajeFinal("Aviso", res.mensaje);
+                    document.getElementById('msgTitulo').classList.replace('text-emerald-600', 'text-cesba-blue');
                 }
             })
             .catch(() => {
                 mostrarMensajeFinal("Error de Conexión", "No se pudo conectar con el servidor. Intenta nuevamente más tarde.");
+                document.getElementById('msgTitulo').classList.replace('text-emerald-600', 'text-rose-600');
             });
         });
 
@@ -187,11 +216,24 @@
 
             const btn = document.getElementById('btnEnviar');
             btn.disabled = true;
-            btn.innerText = "Guardando respuestas...";
+            btn.innerText = "Procesando...";
 
+            // Recopilar Lo que más gustó
             const gustosCheckboxes = document.querySelectorAll('input[name="loQueMasGusto"]:checked');
             let loQueMasGustoArr = [];
             gustosCheckboxes.forEach(cb => loQueMasGustoArr.push(cb.value));
+
+            // Recopilar Temas futuros de los Tags
+            const temasCheckboxes = document.querySelectorAll('input[name="temasFuturosTag"]:checked');
+            let temasFuturosArr = [];
+            temasCheckboxes.forEach(cb => temasFuturosArr.push(cb.value));
+            
+            // Unir los tags seleccionados con lo que hayan escrito a mano
+            let temasFinales = temasFuturosArr.join(', ');
+            let otroTemaEscrito = document.getElementById('otroTallerDeseado').value.trim();
+            if(otroTemaEscrito) {
+                temasFinales = temasFinales ? (temasFinales + ", " + otroTemaEscrito) : otroTemaEscrito;
+            }
 
             const payload = {
                 action: 'guardarEncuesta',
@@ -202,10 +244,10 @@
                 calificacionGeneral: document.querySelector('input[name="calificacionGeneral"]:checked')?.value || '',
                 loQueMasGusto: loQueMasGustoArr.join(', '),
                 claridadTallerista: document.querySelector('input[name="claridadTallerista"]:checked')?.value || '',
-                otroTallerDeseado: document.getElementById('otroTallerDeseado').value,
+                otroTallerDeseado: "", // Se fusionó arriba
                 comentarioTaller: document.getElementById('comentarioTaller').value,
-                temasFuturos: document.getElementById('temasFuturos').value,
-                sugerencias: document.getElementById('sugerencias').value
+                temasFuturos: temasFinales,
+                sugerencias: "" // Se unificó en el mismo campo de comentario para simplificar
             };
 
             fetch(apiUrl, {
@@ -216,17 +258,17 @@
             .then(res => {
                 if (res.status === 'éxito') {
                     document.getElementById('formEncuesta').classList.add('hidden');
-                    mostrarMensajeFinal("¡Muchas Gracias!", res.mensaje);
+                    mostrarMensajeFinal("¡Datos Registrados!", "Hemos recibido tus respuestas. Tu constancia de participación será enviada a tu correo institucional próximamente.");
                 } else {
                     alert(res.mensaje);
                     btn.disabled = false;
-                    btn.innerText = "Enviar Respuestas";
+                    btn.innerText = "Enviar y Solicitar Constancia";
                 }
             })
             .catch(() => {
                 alert("Error de red al guardar tu respuesta.");
                 btn.disabled = false;
-                btn.innerText = "Enviar Respuestas";
+                btn.innerText = "Enviar y Solicitar Constancia";
             });
         });
 
