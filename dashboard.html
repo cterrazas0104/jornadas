@@ -6,8 +6,10 @@
     <title>Cuarto de Control | Jornada Tecnológica 2026</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- html2pdf.js para exportación a PDF -->
+    <!-- html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Chart.js para gráficos avanzados -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
@@ -91,7 +93,6 @@
 
         <!-- CONTENIDO PESTAÑA 1: ASISTENCIA Y LISTAS -->
         <div id="tabContentAsistencia" class="space-y-8">
-            <!-- CARDS DE METRICAS EN TIEMPO REAL -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                     <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Inscritos</span>
@@ -143,59 +144,104 @@
             <!-- LISTADO Y DESGLOSE POR TALLER -->
             <div class="space-y-6">
                 <h3 class="text-xl font-bold text-cesba-blue">Estado de Talleres y Listas Oficiales</h3>
-                <!-- BARRAS DE ACCIÓN DE TALLERES (LAYOUT Y CARGA CSV) -->
-<div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-    <div>
-        <h4 class="font-bold text-cesba-blue text-base">Gestión de Oferta Académica y Requisitos</h4>
-        <p class="text-xs text-gray-500">Descarga la plantilla oficial para editar la lista de talleres o sube el archivo actualizado.</p>
-    </div>
-    <div class="flex flex-wrap gap-3">
-        <!-- Botón Descargar Layout -->
-        <button onclick="descargarPlantillaTalleres()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5">
-            📥 Descargar Plantilla (CSV)
-        </button>
+                
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h4 class="font-bold text-cesba-blue text-base">Gestión de Oferta Académica y Requisitos</h4>
+                        <p class="text-xs text-gray-500">Descarga la plantilla oficial para editar la lista de talleres o sube el archivo actualizado.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="descargarPlantillaTalleres()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                            📥 Descargar Plantilla (CSV)
+                        </button>
 
-        <!-- Formulario Cargar Layout -->
-        <label class="bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer flex items-center gap-1.5">
-            📤 Subir Archivo CSV
-            <input type="file" id="inputCSV" accept=".csv" class="hidden" onchange="procesarCSV(this)">
-        </label>
-    </div>
-</div>
+                        <label class="bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer flex items-center gap-1.5">
+                            📤 Subir Archivo CSV
+                            <input type="file" id="inputCSV" accept=".csv" class="hidden" onchange="procesarCSV(this)">
+                        </label>
+                    </div>
+                </div>
+
                 <div id="contenedorTalleres" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
             </div>
         </div>
 
-        <!-- CONTENIDO PESTAÑA 2: RESULTADOS DE ENCUESTAS -->
+        <!-- CONTENIDO PESTAÑA 2: RESULTADOS DE ENCUESTAS MEJORADO -->
         <div id="tabContentEncuestas" class="hidden space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- TARJETAS DE MÉTIRCAS GLOBALES DE ENCUESTA -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                     <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Encuestas Contestadas</span>
                     <div id="kpiTotalEncuestas" class="text-4xl font-black text-purple-600 mt-2">0</div>
                     <span id="kpiParticipacionEncuesta" class="text-xs text-gray-500 mt-1 block">0% de los asistentes</span>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm md:col-span-2">
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Evaluación General del Evento</span>
-                    <div id="graficoCalificacionGeneral" class="space-y-2"></div>
+
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Satisfacción General</span>
+                    <div id="kpiSatisfaccionScore" class="text-4xl font-black text-emerald-600 mt-2">0%</div>
+                    <span class="text-xs text-gray-500 mt-1 block">Opiniones Positivas</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Claridad Global Talleristas</span>
+                    <div id="kpiPromedioClaridadGlobal" class="text-4xl font-black text-indigo-600 mt-2">0.0 / 5</div>
+                    <span class="text-xs text-gray-500 mt-1 block">Promedio de las explicaciones</span>
                 </div>
             </div>
 
-            <!-- TALLERES Y EVALUACIÓN DE TALLERISTAS -->
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
-                <h3 class="text-lg font-bold text-cesba-blue">Desempeño de Talleristas (Claridad del 1 al 5)</h3>
+            <!-- GRÁFICOS VISUALES MEJORADOS -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Gráfico de Dona: Opinión General -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación General del Evento</h3>
+                        <p class="text-xs text-gray-500 mb-4">¿Cómo calificaron los alumnos la jornada?</p>
+                    </div>
+                    <div class="relative max-w-xs mx-auto w-full h-64">
+                        <canvas id="chartCalificacionGeneral"></canvas>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Barras: Lo que más gustó -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Lo Que Más Gustó (Excluyendo Talleres)</h3>
+                        <p class="text-xs text-gray-500 mb-4">Métricas de experiencia general y logística</p>
+                    </div>
+                    <div class="relative w-full h-64">
+                        <canvas id="chartLoQueMasGusto"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANÁLISIS INDIVIDUAL POR TALLERISTA (MÁS RELEVANTE) -->
+            <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold text-cesba-blue">Desempeño y Feedback por Tallerista</h3>
+                        <p class="text-xs text-gray-500">Evaluación específica de claridad y comentarios por cada taller impartido</p>
+                    </div>
+                </div>
                 <div id="contenedorStatsTalleres" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
 
             <!-- SUGERENCIAS E IDEAS FUTURAS -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-                    <h3 class="text-lg font-bold text-cesba-blue">💡 Ideas de Temas para 2027</h3>
-                    <div id="listTemasFuturos" class="max-h-60 overflow-y-auto space-y-2 text-xs text-gray-700"></div>
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-cesba-blue">💡 Ideas de Temas para 2027</h3>
+                        <span id="badgeTemasCount" class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-0.5 rounded-full">0 ideas</span>
+                    </div>
+                    <div id="listTemasFuturos" class="max-h-80 overflow-y-auto space-y-2 pr-2 text-xs text-gray-700"></div>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-                    <h3 class="text-lg font-bold text-cesba-blue">💬 Sugerencias de los Alumnos</h3>
-                    <div id="listSugerencias" class="max-h-60 overflow-y-auto space-y-2 text-xs text-gray-700"></div>
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-cesba-blue">💬 Sugerencias de Logística</h3>
+                        <span id="badgeSugCount" class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full">0 comentarios</span>
+                    </div>
+                    <div id="listSugerencias" class="max-h-80 overflow-y-auto space-y-2 pr-2 text-xs text-gray-700"></div>
                 </div>
             </div>
         </div>
@@ -209,6 +255,9 @@
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
         const MILS_8_HORAS = 8 * 60 * 60 * 1000;
         let datosGlobales = null;
+
+        let chartGralInstance = null;
+        let chartGustoInstance = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const sesion = obtenerSesionAdminValida();
@@ -381,51 +430,143 @@
             const pctPart = gen > 0 ? Math.round((enc.totalRespuestas / gen) * 100) : 0;
             document.getElementById('kpiParticipacionEncuesta').innerText = `${pctPart}% de los asistentes respondieron`;
 
-            // Gráfico de satisfacción
-            const contGral = document.getElementById('graficoCalificacionGeneral');
-            contGral.innerHTML = '';
-            Object.keys(enc.calificacionesGenerales).forEach(k => {
-                const count = enc.calificacionesGenerales[k];
-                const pct = enc.totalRespuestas > 0 ? Math.round((count / enc.totalRespuestas) * 100) : 0;
-                contGral.innerHTML += `
-                    <div>
-                        <div class="flex justify-between text-xs font-bold mb-1">
-                            <span>${k}</span>
-                            <span>${count} (${pct}%)</span>
-                        </div>
-                        <div class="w-full bg-gray-100 rounded-full h-2">
-                            <div class="bg-cesba-purple h-2 rounded-full" style="width: ${pct}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
+            // Score de satisfacción general
+            const supero = enc.calificacionesGenerales["Superó expectativas"] || 0;
+            const muyBien = enc.calificacionesGenerales["Estuvo muy bien"] || 0;
+            const pos = supero + muyBien;
+            const pctSat = enc.totalRespuestas > 0 ? Math.round((pos / enc.totalRespuestas) * 100) : 0;
+            document.getElementById('kpiSatisfaccionScore').innerText = `${pctSat}%`;
 
-            // Talleristas Stats
+            // Promedio Global de Claridad
+            let sumaGlobalClaridad = 0;
+            let countGlobalClaridad = 0;
+            data.talleres.forEach(t => {
+                sumaGlobalClaridad += t.sumaClaridad;
+                countGlobalClaridad += t.respuestasEncuestaCount;
+            });
+            const promGralClaridad = countGlobalClaridad > 0 ? (sumaGlobalClaridad / countGlobalClaridad).toFixed(1) : "0.0";
+            document.getElementById('kpiPromedioClaridadGlobal').innerText = `${promGralClaridad} / 5.0`;
+
+            // RENDERIZAR GRÁFICO 1: DONA CALIFICACIÓN GENERAL
+            renderizarGraficoGeneral(enc.calificacionesGenerales);
+
+            // RENDERIZAR GRÁFICO 2: BARRAS LO QUE MÁS GUSTÓ
+            renderizarGraficoGustos(enc.loQueMasGustoMap);
+
+            // RENDERIZAR FICHAS POR TALLERISTA
             const contTalStats = document.getElementById('contenedorStatsTalleres');
             contTalStats.innerHTML = '';
             data.talleres.forEach(t => {
+                let comentariosHTML = '';
+                if (t.comentariosTaller && t.comentariosTaller.length > 0) {
+                    comentariosHTML = t.comentariosTaller.map(c => `<li class="border-b border-gray-100 pb-1 font-normal text-gray-600">"${c}"</li>`).join('');
+                } else {
+                    comentariosHTML = '<li class="text-gray-400 italic font-normal">Sin comentarios adicionales.</li>';
+                }
+
+                let otrosTalleresHTML = '';
+                if (t.otrosTalleresDeseados && t.otrosTalleresDeseados.length > 0) {
+                    otrosTalleresHTML = t.otrosTalleresDeseados.map(o => `<span class="inline-block bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-md text-[11px]">${o}</span>`).join(' ');
+                }
+
                 contTalStats.innerHTML += `
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-sm text-cesba-blue">${t.nombre}</span>
-                            <span class="bg-amber-100 text-amber-800 text-xs font-black px-2 py-1 rounded">⭐ ${t.promedioClaridad} / 5</span>
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-2.5 py-1 rounded-md uppercase">${t.id}</span>
+                                <h4 class="text-base font-bold text-cesba-blue mt-1">${t.nombre}</h4>
+                                <p class="text-xs text-gray-500 font-medium">👨‍🏫 Instructor: ${t.instructor}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-amber-100 text-amber-800 text-sm font-black px-3 py-1 rounded-xl block">⭐ ${t.promedioClaridad} / 5</span>
+                                <span class="text-[10px] text-gray-400 mt-1 block">${t.respuestasEncuestaCount} encuestas</span>
+                            </div>
                         </div>
-                        <p class="text-xs text-gray-500">Instructor: ${t.instructor} (${t.respuestasEncuestaCount} encuestas)</p>
-                        ${t.comentariosTaller.length > 0 ? `
-                            <div class="mt-2 text-xs italic bg-white p-2 rounded border border-gray-200 max-h-20 overflow-y-auto">
-                                "${t.comentariosTaller.join('"<br>"')}"
+
+                        ${otrosTalleresHTML ? `
+                            <div class="pt-2 border-t">
+                                <span class="text-[11px] font-bold text-gray-500 block mb-1">Otros talleres que le pidieron a este instructor:</span>
+                                <div class="flex flex-wrap gap-1">${otrosTalleresHTML}</div>
                             </div>
                         ` : ''}
+
+                        <div class="pt-2 border-t">
+                            <span class="text-[11px] font-bold text-gray-500 block mb-1">Comentarios recibidos:</span>
+                            <ul class="max-h-28 overflow-y-auto space-y-1.5 text-xs pr-1">${comentariosHTML}</ul>
+                        </div>
                     </div>
                 `;
             });
 
             // Listas
             const listFut = document.getElementById('listTemasFuturos');
-            listFut.innerHTML = enc.temasFuturosList.map(item => `<div class="p-2 bg-gray-50 rounded border">💡 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros.</p>';
+            document.getElementById('badgeTemasCount').innerText = `${enc.temasFuturosList.length} ideas`;
+            listFut.innerHTML = enc.temasFuturosList.map(item => `<div class="p-2.5 bg-gray-50 rounded-xl border border-gray-100 shadow-2xs font-medium">💡 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros.</p>';
 
             const listSug = document.getElementById('listSugerencias');
-            listSug.innerHTML = enc.sugerenciasList.map(item => `<div class="p-2 bg-gray-50 rounded border">💬 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros.</p>';
+            document.getElementById('badgeSugCount').innerText = `${enc.sugerenciasList.length} comentarios`;
+            listSug.innerHTML = enc.sugerenciasList.map(item => `<div class="p-2.5 bg-gray-50 rounded-xl border border-gray-100 shadow-2xs font-medium">💬 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros.</p>';
+        }
+
+        function renderizarGraficoGeneral(calificaciones) {
+            const ctx = document.getElementById('chartCalificacionGeneral').getContext('2d');
+            if (chartGralInstance) chartGralInstance.destroy();
+
+            chartGralInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['🚀 Superó expectativas', '🤩 Estuvo muy bien', '🧐 Áreas de mejora', '😟 No fue lo esperado'],
+                    datasets: [{
+                        data: [
+                            calificaciones["Superó expectativas"] || 0,
+                            calificaciones["Estuvo muy bien"] || 0,
+                            calificaciones["Áreas de mejora"] || 0,
+                            calificaciones["No fue lo esperado"] || 0
+                        ],
+                        backgroundColor: ['#10b981', '#1e3a8a', '#f59e0b', '#f43f5e']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        function renderizarGraficoGustos(gustosMap) {
+            const ctx = document.getElementById('chartLoQueMasGusto').getContext('2d');
+            if (chartGustoInstance) chartGustoInstance.destroy();
+
+            chartGustoInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['🎤 Conferencia', '📋 Organización', '🤝 Ambiente', '☕ Descansos'],
+                    datasets: [{
+                        label: 'Votos de Alumnos',
+                        data: [
+                            gustosMap["La Conferencia"] || 0,
+                            gustosMap["La Organización"] || 0,
+                            gustosMap["El Ambiente"] || 0,
+                            gustosMap["Los Descansos"] || 0
+                        ],
+                        backgroundColor: '#ad8ad4',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { display: false } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
         }
 
         function filtrarAlumnosGlobal() {
@@ -543,110 +684,107 @@
                 .catch(() => alert("Error al procesar el envío masivo."));
             }
         }
-// 1. DESCARGAR PLANTILLA / LAYOUT EN FORMATO CSV (CON QUOTES CORRECTOS)
-function descargarPlantillaTalleres() {
-    let csvContent = "\uFEFF"; // UTF-8 BOM para excelente compatibilidad con Excel
-    csvContent += "ID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos\n";
-    csvContent += "T01,\"Introducción a los Contenedores\",\"Guillermo Pucheta\",25,\"Laptop con Windows 10/11 o macOS, 8GB RAM, Virtualization activa en BIOS.\"\n";
-    csvContent += "T02,\"MongoDB\",\"Mtro. César Terrazas\",30,\"Laptop con VirtualBox instalado y 30GB libres en disco duro.\"\n";
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "Plantilla_Oferta_Talleres_2026.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+        function descargarPlantillaTalleres() {
+            let csvContent = "\uFEFF";
+            csvContent += "ID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos\n";
+            csvContent += "T01,\"Introducción a los Contenedores\",\"Guillermo Pucheta\",25,\"Laptop con Windows 10/11 o macOS, 8GB RAM, Virtualization activa en BIOS.\"\n";
+            csvContent += "T02,\"MongoDB\",\"Mtro. César Terrazas\",30,\"Laptop con VirtualBox instalado y 30GB libres en disco duro.\"\n";
 
-// 2. PARSER CSV ROBUSTO (Mantiene espacios, comas y comillas intactas)
-function parsearLineaCSV(linea) {
-    let resultado = [];
-    let celda = '';
-    let enComillas = false;
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Plantilla_Oferta_Talleres_2026.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
-    for (let i = 0; i < linea.length; i++) {
-        let char = linea[i];
+        function parsearLineaCSV(linea) {
+            let resultado = [];
+            let celda = '';
+            let enComillas = false;
 
-        if (enComillas) {
-            if (char === '"') {
-                if (i + 1 < linea.length && linea[i + 1] === '"') {
-                    celda += '"';
-                    i++;
+            for (let i = 0; i < linea.length; i++) {
+                let char = linea[i];
+
+                if (enComillas) {
+                    if (char === '"') {
+                        if (i + 1 < linea.length && linea[i + 1] === '"') {
+                            celda += '"';
+                            i++;
+                        } else {
+                            enComillas = false;
+                        }
+                    } else {
+                        celda += char;
+                    }
                 } else {
-                    enComillas = false;
+                    if (char === '"') {
+                        enComillas = true;
+                    } else if (char === ',') {
+                        resultado.push(celda.trim());
+                        celda = '';
+                    } else {
+                        celda += char;
+                    }
                 }
-            } else {
-                celda += char;
             }
-        } else {
-            if (char === '"') {
-                enComillas = true;
-            } else if (char === ',') {
-                resultado.push(celda.trim());
-                celda = '';
-            } else {
-                celda += char;
-            }
-        }
-    }
-    resultado.push(celda.trim());
-    return resultado;
-}
-
-// 3. LEER Y SUBIR ARCHIVO CSV AL SERVIDOR
-function procesarCSV(input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const text = e.target.result;
-        const lineas = text.split(/\r\n|\n/);
-        let matriz = [];
-
-        for (let i = 0; i < lineas.length; i++) {
-            const lineaLimpia = lineas[i].trim();
-            if (lineaLimpia !== '') {
-                matriz.push(parsearLineaCSV(lineaLimpia));
-            }
+            resultado.push(celda.trim());
+            return resultado;
         }
 
-        if (matriz.length < 2) {
-            alert("El archivo CSV no contiene información válida.");
-            return;
-        }
+        function procesarCSV(input) {
+            const file = input.files[0];
+            if (!file) return;
 
-        if (confirm(`¿Confirmas que deseas actualizar la oferta con ${matriz.length - 1} talleres? Esto sobrescribirá la lista actual.`)) {
-            const correo = obtenerSesionAdminValida();
-            
-            fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'actualizarTalleresCSV',
-                    correoAdmin: correo,
-                    matrizTalleres: matriz
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'éxito') {
-                    alert("¡Éxito! " + data.mensaje);
-                    recargarDatos(); // Refresca las tarjetas
-                } else {
-                    alert("Error: " + data.mensaje);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lineas = text.split(/\r\n|\n/);
+                let matriz = [];
+
+                for (let i = 0; i < lineas.length; i++) {
+                    const lineaLimpia = lineas[i].trim();
+                    if (lineaLimpia !== '') {
+                        matriz.push(parsearLineaCSV(lineaLimpia));
+                    }
                 }
-            })
-            .catch(() => alert("Error de red al intentar actualizar los talleres."));
-        }
-        
-        // Limpiar el input file para permitir subir el mismo archivo si se vuelve a editar
-        input.value = '';
-    };
 
-    reader.readAsText(file, "UTF-8");
-}
+                if (matriz.length < 2) {
+                    alert("El archivo CSV no contiene información válida.");
+                    return;
+                }
+
+                if (confirm(`¿Confirmas que deseas actualizar la oferta con ${matriz.length - 1} talleres? Esto sobrescribirá la lista actual.`)) {
+                    const correo = obtenerSesionAdminValida();
+                    
+                    fetch(apiUrl, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'actualizarTalleresCSV',
+                            correoAdmin: correo,
+                            matrizTalleres: matriz
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'éxito') {
+                            alert("¡Éxito! " + data.mensaje);
+                            recargarDatos();
+                        } else {
+                            alert("Error: " + data.mensaje);
+                        }
+                    })
+                    .catch(() => alert("Error de red al intentar actualizar los talleres."));
+                }
+                
+                input.value = '';
+            };
+
+            reader.readAsText(file, "UTF-8");
+        }
     </script>
 </body>
 </html>
