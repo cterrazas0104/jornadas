@@ -41,16 +41,22 @@
                     <span class="font-bold text-lg hidden sm:inline">Jornada Tecnológica 2026</span>
                 </div>
                 
-                <div id="userInfo" class="hidden items-center space-x-3">
-                    <span id="labelAdminCorreo" class="text-xs text-purple-200 font-medium hidden md:inline"></span>
-                    
-                    <button onclick="dispararEncuestas()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
-                        📩 Enviar Encuestas
-                    </button>
+<div id="userInfo" class="hidden items-center space-x-3">
+    <!-- Indicador de Auto-Actualización en Vivo -->
+    <div class="hidden lg:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-emerald-400 text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="lblUltimaActualizacion" class="font-medium">En vivo (Cada 60s)</span>
+    </div>
 
-                    <button onclick="recargarDatos()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition">🔄 Actualizar</button>
-                    <button onclick="cerrarSesionAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">Salir</button>
-                </div>
+    <span id="labelAdminCorreo" class="text-xs text-purple-200 font-medium hidden md:inline"></span>
+    
+    <button onclick="dispararEncuestas()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
+        📩 Enviar Encuestas
+    </button>
+
+    <button onclick="recargarDatos()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition">🔄 Actualizar</button>
+    <button onclick="cerrarSesionAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg font-bold transition">Salir</button>
+</div>
             </div>
         </div>
     </nav>
