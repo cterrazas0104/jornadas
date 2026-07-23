@@ -473,44 +473,44 @@
             window.location.href = '#registro';
         }
 
-        // Formulario Registro de Alumnos
-        document.getElementById('registroForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSubmit');
-            const mensajeArea = document.getElementById('mensajeArea');
-            btn.disabled = true;
-            btn.innerText = "Verificando...";
+// Formulario Registro de Alumnos
+document.getElementById('registroForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmit');
+    const mensajeArea = document.getElementById('mensajeArea');
+    btn.disabled = true;
+    btn.innerText = "Verificando...";
 
-            fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({
-                    matricula: document.getElementById('matricula').value,
-                    idTaller: document.getElementById('idTaller').value
-                }),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'éxito') {
-                    mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm";
-                    mensajeArea.innerText = data.mensaje;
-                    this.reset();
-                } else {
-                    mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 shadow-sm";
-                    mensajeArea.innerText = "⚠️ " + data.mensaje;
-                }
-                mensajeArea.classList.remove('hidden');
-            })
-            .catch(() => {
-                mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-rose-100 text-rose-800 border border-rose-200";
-                mensajeArea.innerText = "No se pudo completar la solicitud. Por favor, verifica tu conexión a internet e inténtalo de nuevo.";
-                mensajeArea.classList.remove('hidden');
-            })
-            .finally(() => {
-                btn.disabled = false;
-                btn.innerText = "Confirmar e Inscribir";
-            });
-        });
+    fetch(apiUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+            matricula: document.getElementById('matricula').value,
+            idTaller: document.getElementById('idTaller').value
+        }),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'éxito') {
+            mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm";
+            mensajeArea.innerHTML = data.mensaje;
+            this.reset();
+        } else {
+            mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 shadow-sm";
+            mensajeArea.innerHTML = "⚠️ " + data.mensaje;
+        }
+        mensajeArea.classList.remove('hidden');
+    })
+    .catch(() => {
+        mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-rose-100 text-rose-800 border border-rose-200";
+        mensajeArea.innerHTML = "No se pudo completar la solicitud. Por favor, verifica tu conexión a internet e inténtalo de nuevo.";
+        mensajeArea.classList.remove('hidden');
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerText = "Confirmar e Inscribir";
+    });
+});
 
         // GESTIÓN DE SESIÓN DOCENTE (8 HORAS)
         const MILS_8_HORAS = 8 * 60 * 60 * 1000;
