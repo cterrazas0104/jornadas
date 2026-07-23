@@ -234,6 +234,13 @@
                     </button>
                 </form>
 
+                <p class="text-[11px] text-gray-400 text-center mt-4">
+                    Al inscribirte aceptas los términos del 
+                    <button type="button" onclick="abrirModalPrivacidad()" class="text-cesba-primary font-bold underline hover:text-cesba-purple">
+                        Aviso de Privacidad
+                    </button>.
+                </p>
+
                 <div id="mensajeArea" class="mt-6 text-center text-sm font-bold hidden p-4 rounded-xl"></div>
             </div>
         </div>
@@ -271,13 +278,66 @@
             <p class="text-xs text-gray-400 font-medium tracking-wide">
                 © 2026 Mtro. César Terrazas Zarazúa. Todos los derechos reservados.
             </p>
-            <div class="pt-2">
-                <button onclick="abrirModalDocente()" class="text-xs text-cesba-purple hover:underline focus:outline-none font-bold">
+            <div class="pt-2 flex flex-wrap justify-center gap-4 text-xs text-cesba-purple">
+                <button onclick="abrirModalPrivacidad()" class="hover:underline font-medium">
+                    📋 Aviso de Privacidad
+                </button>
+                <span>•</span>
+                <button onclick="abrirModalDocente()" class="hover:underline font-bold">
                     🔒 Acceso exclusivo para Docentes (Control de Asistencia)
                 </button>
             </div>
         </div>
     </footer>
+
+    <!-- MODAL AVISO DE PRIVACIDAD -->
+    <div id="modalPrivacidad" class="fixed inset-0 z-[100] bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalPrivacidad()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-700 font-bold text-xl">
+                ✕
+            </button>
+
+            <div class="flex items-center gap-2 text-cesba-primary">
+                <span class="text-2xl">🛡️</span>
+                <h3 class="text-xl font-black text-cesba-blue">Aviso de Privacidad Simplificado</h3>
+            </div>
+
+            <p class="text-xs text-gray-500 font-medium border-b pb-3">
+                Jornada Tecnológica 2026 • CESBA Querétaro
+            </p>
+
+            <div class="text-xs text-gray-700 space-y-3 leading-relaxed">
+                <p>
+                    El <strong>Centro de Estudios Superiores del Bajío (CESBA Campus Querétaro)</strong>, a través de la Dirección y Coordinación de la Escuela de Sistemas Computacionales, es responsable del tratamiento de los datos personales que proporcionas en esta plataforma.
+                </p>
+
+                <h4 class="font-bold text-cesba-blue text-sm">1. Datos Personales Recabados</h4>
+                <p>
+                    Para llevar a cabo el proceso de inscripción y logística del evento, recabamos los siguientes datos personales: matrícula escolar, nombre completo y correo electrónico institucional.
+                </p>
+
+                <h4 class="font-bold text-cesba-blue text-sm">2. Finalidades del Tratamiento</h4>
+                <p>Los datos personales recabados serán utilizados estrictamente para:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Gestionar tu registro y asignación de cupo en los talleres disponibles.</li>
+                    <li>Generar y enviar a tu correo electrónico tu código QR de acceso personalizado.</li>
+                    <li>Registrar tus pases de asistencia a la conferencia general y al taller asignado.</li>
+                    <li>Enviar la encuesta de satisfacción y emitir tu Constancia Oficial de Participación.</li>
+                </ul>
+
+                <h4 class="font-bold text-cesba-blue text-sm">3. Transferencia de Datos</h4>
+                <p>
+                    Le informamos que sus datos personales son de uso estrictamente institucional y no serán transferidos, vendidos ni compartidos con ninguna empresa o tercero ajeno a CESBA Querétaro.
+                </p>
+            </div>
+
+            <div class="pt-4 border-t flex justify-end">
+                <button onclick="cerrarModalPrivacidad()" class="bg-cesba-blue hover:bg-cesba-primary text-white text-xs font-bold px-6 py-2.5 rounded-xl transition">
+                    Entendido y Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL DOCENTES (LOGIN + ESCÁNER) -->
     <div id="modalDocente" class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4 backdrop-blur-sm">
@@ -336,7 +396,18 @@
     <script>
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
         let html5QrcodeScanner = null;
-        let escaneandoEnProceso = false; // Candado para evitar lecturas duplicadas mientras responde el servidor
+        let escaneandoEnProceso = false;
+
+        // MODAL DE PRIVACIDAD
+        function abrirModalPrivacidad() {
+            document.getElementById('modalPrivacidad').classList.remove('hidden');
+            document.getElementById('modalPrivacidad').classList.add('flex');
+        }
+
+        function cerrarModalPrivacidad() {
+            document.getElementById('modalPrivacidad').classList.add('hidden');
+            document.getElementById('modalPrivacidad').classList.remove('flex');
+        }
 
         // CARGAR CATÁLOGO DE TALLERES Y REQUISITOS
         document.addEventListener('DOMContentLoaded', () => {
@@ -558,16 +629,16 @@
         }
 
         // BEEP SONORO AL DETECTAR QR
-function reproducirBeep() {
+        function reproducirBeep() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 if (audioCtx.state === 'suspended') {
-                    audioCtx.resume(); // Despierta el motor de audio en iPad/iOS/Laptops
+                    audioCtx.resume();
                 }
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = "sine";
-                osc.frequency.value = 880; // Tono agudo tipo escáner de supermercado
+                osc.frequency.value = 880;
                 gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
@@ -578,7 +649,6 @@ function reproducirBeep() {
 
         // LÓGICA DE ESCANEO FLUIDO
         function onScanSuccess(decodedText) {
-            // Evita procesar múltiples lecturas simultáneas
             if (escaneandoEnProceso) return;
 
             const correoDocente = obtenerSesionValida();
@@ -591,16 +661,14 @@ function reproducirBeep() {
             const partes = decodedText.split('-');
             const matricula = partes.length > 1 ? partes[1] : decodedText;
 
-            // 1. REACCION INMEDIATA (MILISEGUNDO 0)
             escaneandoEnProceso = true;
-            reproducirBeep(); // Emite sonido de lectura
+            reproducirBeep();
 
             const resDiv = document.getElementById('resultadoEscaner');
             resDiv.innerText = `⏳ QR Detectado (${matricula})... Registrando en servidor`;
             resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-amber-900 bg-amber-100 border border-amber-300 shadow-md animate-pulse";
             resDiv.classList.remove('hidden');
 
-            // 2. PETICION AL SERVIDOR EN SEGUNDO PLANO
             fetch(apiUrl, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -621,10 +689,9 @@ function reproducirBeep() {
                 resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white bg-rose-600 shadow-md";
             })
             .finally(() => {
-                // 3. PAUSA DE 2.5 SEGUNDOS ANTES DE ACTIVAR LA SIGUIENTE LECTURA
                 setTimeout(() => {
                     resDiv.classList.add('hidden');
-                    escaneandoEnProceso = false; // Desbloquea para el siguiente alumno
+                    escaneandoEnProceso = false;
                 }, 2500);
             });
         }
