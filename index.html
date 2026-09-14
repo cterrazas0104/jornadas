@@ -512,7 +512,7 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
     });
 });
 
-        // GESTIÓN DE SESIÓN DOCENTE (8 HORAS)
+      // GESTIÓN DE SESIÓN DOCENTE (8 HORAS)
         const MILS_8_HORAS = 8 * 60 * 60 * 1000;
 
         function obtenerSesionValida() {
@@ -521,7 +521,7 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
             
             const session = JSON.parse(sessionData);
             if (Date.now() - session.timestamp < MILS_8_HORAS) {
-                return session.correo;
+                return session; // Ahora devolvemos el objeto completo (con rol y taller)
             } else {
                 localStorage.removeItem('cesba_docente_session');
                 return null;
@@ -532,9 +532,9 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
             document.getElementById('modalDocente').classList.remove('hidden');
             document.getElementById('modalDocente').classList.add('flex');
             
-            const correoActivo = obtenerSesionValida();
-            if (correoActivo) {
-                mostrarVistaEscaner(correoActivo);
+            const sesionActiva = obtenerSesionValida();
+            if (sesionActiva) {
+                mostrarVistaEscaner(sesionActiva);
             } else {
                 mostrarVistaLogin();
             }
@@ -576,12 +576,15 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'éxito') {
-                    localStorage.setItem('cesba_docente_session', JSON.stringify({
+                    const sessionObj = {
                         correo: correo,
+                        rol: data.rol,
+                        tallerAsignado: data.tallerAsignado,
                         timestamp: Date.now()
-                    }));
+                    };
+                    localStorage.setItem('cesba_docente_session', JSON.stringify(sessionObj));
                     msgDiv.classList.add('hidden');
-                    mostrarVistaEscaner(correo);
+                    mostrarVistaEscaner(sessionObj);
                 } else {
                     msgDiv.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
                     msgDiv.innerText = data.mensaje;
@@ -604,10 +607,29 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
             document.getElementById('vistaEscaner').classList.add('hidden');
         }
 
-        function mostrarVistaEscaner(correo) {
+        function mostrarVistaEscaner(sesion) {
             document.getElementById('vistaLogin').classList.add('hidden');
             document.getElementById('vistaEscaner').classList.remove('hidden');
-            document.getElementById('labelDocenteCorreo').innerText = correo;
+            document.getElementById('labelDocenteCorreo').innerText = sesion.correo;
+
+            // LÓGICA DE ROLES PARA LA INTERFAZ
+            const selectAsistencia = document.getElementById('tipoAsistencia');
+            if (sesion.rol === 'general') {
+                selectAsistencia.innerHTML = '<option value="general">1. Conferencia General (Entrada)</option>';
+                selectAsistencia.disabled = true;
+                selectAsistencia.classList.add('bg-gray-200');
+            } else if (sesion.rol === 'taller') {
+                selectAsistencia.innerHTML = `<option value="taller">2. Taller Específico (${sesion.tallerAsignado || 'Aula'})</option>`;
+                selectAsistencia.disabled = true;
+                selectAsistencia.classList.add('bg-gray-200');
+            } else {
+                selectAsistencia.innerHTML = `
+                    <option value="general">1. Conferencia General (Entrada)</option>
+                    <option value="taller">2. Taller Específico</option>
+                `;
+                selectAsistencia.disabled = false;
+                selectAsistencia.classList.remove('bg-gray-200');
+            }
 
             if (!html5QrcodeScanner) {
                 html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
@@ -651,8 +673,8 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
         function onScanSuccess(decodedText) {
             if (escaneandoEnProceso) return;
 
-            const correoDocente = obtenerSesionValida();
-            if (!correoDocente) {
+            const sesionActiva = obtenerSesionValida();
+            if (!sesionActiva) {
                 alert("La sesión ha expirado. Inicia sesión nuevamente.");
                 cerrarSesionDocente();
                 return;
@@ -674,8 +696,9 @@ document.getElementById('registroForm').addEventListener('submit', function(e) {
                 body: JSON.stringify({
                     action: 'asistencia',
                     matricula: matricula,
-                    correoDocente: correoDocente,
-                    tipo: document.getElementById('tipoAsistencia').value
+                    correoDocente: sesionActiva.correo,
+                    tipo: document.getElementById('tipoAsistencia').value,
+                    tallerAsignado: sesionActiva.tallerAsignado // Enviamos el taller para validación antifraude
                 })
             })
             .then(res => res.json())
