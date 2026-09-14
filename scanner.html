@@ -2,50 +2,127 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Escáner de Asistencia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Asistencia | CESBA</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    <div class="max-w-md w-full bg-white p-6 rounded shadow-lg text-center">
-        <h1 class="text-2xl font-bold mb-4 text-blue-900">Control de Asistencia</h1>
-        <input type="email" id="emailDocente" placeholder="Tu correo institucional" class="w-full p-2 border mb-2 rounded">
-        <select id="tipoAsistencia" class="w-full p-2 border mb-4 rounded">
-            <option value="general">Asistencia General</option>
-            <option value="taller">Asistencia Taller</option>
-        </select>
-        <div id="reader" class="w-full"></div>
-        <div id="resultado" class="mt-4 p-4 text-center rounded hidden font-bold"></div>
+    <div class="max-w-md w-full bg-white p-6 rounded-2xl shadow-lg">
+        <h1 class="text-2xl font-bold mb-2 text-blue-900 text-center">Control de Asistencia</h1>
+        
+        <!-- PANTALLA LOGIN -->
+        <div id="loginSection" class="space-y-4 mt-6">
+            <input type="email" id="emailDocente" placeholder="Tu correo institucional" class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" id="passDocente" placeholder="Contraseña" class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="btnLogin" onclick="login()" class="w-full bg-blue-900 text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">Iniciar Sesión</button>
+            <div id="msgLogin" class="text-center font-bold text-sm text-red-600 hidden"></div>
+        </div>
+
+        <!-- PANTALLA ESCÁNER -->
+        <div id="scannerSection" class="hidden mt-4 space-y-4">
+            <div class="flex justify-between items-center text-sm border-b pb-2">
+                <span id="docenteLabel" class="text-gray-600 font-bold"></span>
+                <button onclick="logout()" class="text-red-500 hover:underline">Salir</button>
+            </div>
+            
+            <select id="tipoAsistencia" class="w-full p-3 border rounded-xl bg-gray-50 font-bold text-blue-900 outline-none">
+                <!-- Se llena dinámicamente -->
+            </select>
+            
+            <div id="reader" class="w-full rounded overflow-hidden"></div>
+            <div id="resultado" class="mt-4 p-4 text-center rounded hidden font-bold text-sm"></div>
+        </div>
     </div>
 
     <script>
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
+        let html5QrcodeScanner = null;
+        let userData = {};
 
-        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
-            fps: 20, qrbox: 200, facingMode: { ideal: "environment" } 
-        });
+        function login() {
+            const correo = document.getElementById('emailDocente').value;
+            const pass = document.getElementById('passDocente').value;
+            const btn = document.getElementById('btnLogin');
+            const msg = document.getElementById('msgLogin');
+            
+            if(!correo || !pass) return;
+
+            btn.innerText = "Verificando...";
+            btn.disabled = true;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'login', correoDocente: correo, passwordDocente: pass })
+            }).then(res => res.json()).then(data => {
+                if(data.status === 'éxito') {
+                    userData = { correo: correo, rol: data.rol, taller: data.tallerAsignado };
+                    iniciarEscaner();
+                } else {
+                    msg.innerText = data.mensaje;
+                    msg.classList.remove('hidden');
+                }
+            }).catch(() => {
+                msg.innerText = "Error de conexión.";
+                msg.classList.remove('hidden');
+            }).finally(() => {
+                btn.innerText = "Iniciar Sesión";
+                btn.disabled = false;
+            });
+        }
+
+        function iniciarEscaner() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('scannerSection').classList.remove('hidden');
+            document.getElementById('docenteLabel').innerText = userData.correo;
+
+            const select = document.getElementById('tipoAsistencia');
+            if(userData.rol === 'general') {
+                select.innerHTML = '<option value="general">Pase General (Entrada)</option>';
+                select.disabled = true;
+            } else if(userData.rol === 'taller') {
+                select.innerHTML = `<option value="taller">Pase Taller (${userData.taller || 'Aula'})</option>`;
+                select.disabled = true;
+            } else {
+                select.innerHTML = '<option value="general">Pase General</option><option value="taller">Pase Taller</option>';
+                select.disabled = false;
+            }
+
+            html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 15, qrbox: 220, facingMode: "environment" });
+            html5QrcodeScanner.render(onScanSuccess);
+        }
 
         function onScanSuccess(decodedText) {
-            const matricula = decodedText.split('-')[1];
+            const matricula = decodedText.includes('-') ? decodedText.split('-')[1] : decodedText;
+            const resDiv = document.getElementById('resultado');
+            
+            resDiv.innerText = "⏳ Registrando...";
+            resDiv.className = "mt-4 p-4 text-center rounded font-bold bg-yellow-100 text-yellow-800";
+            resDiv.classList.remove('hidden');
+
             fetch(apiUrl, {
                 method: 'POST',
                 body: JSON.stringify({ 
                     action: 'asistencia', 
                     matricula: matricula, 
-                    correoDocente: document.getElementById('emailDocente').value,
-                    tipo: document.getElementById('tipoAsistencia').value
+                    correoDocente: userData.correo,
+                    tipo: document.getElementById('tipoAsistencia').value,
+                    tallerAsignado: userData.taller
                 })
-            })
-            .then(res => res.json())
-            .then(data => {
-                const resDiv = document.getElementById('resultado');
+            }).then(res => res.json()).then(data => {
                 resDiv.innerText = data.mensaje;
                 resDiv.className = "mt-4 p-4 text-center rounded font-bold " + (data.status === 'éxito' ? 'bg-green-500 text-white' : 'bg-red-500 text-white');
-                resDiv.classList.remove('hidden');
-                setTimeout(() => resDiv.classList.add('hidden'), 2000);
+                setTimeout(() => resDiv.classList.add('hidden'), 2500);
             });
         }
-        html5QrcodeScanner.render(onScanSuccess);
+
+        function logout() {
+            if(html5QrcodeScanner) html5QrcodeScanner.clear();
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('scannerSection').classList.add('hidden');
+            document.getElementById('emailDocente').value = '';
+            document.getElementById('passDocente').value = '';
+        }
     </script>
 </body>
 </html>
