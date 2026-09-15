@@ -258,7 +258,7 @@
             .then(res => {
                 if (res.status === 'éxito') {
                     document.getElementById('formEncuesta').classList.add('hidden');
-                    mostrarMensajeFinal("¡Datos Registrados!", "Hemos recibido tus respuestas. Tu constancia de participación será enviada a tu correo institucional próximamente.");
+                    mostrarMensajeFinal("¡Datos Registrados!", "Hemos recibido tus respuestas. En breve recibirás instrucciones para obtener tu constancia de participación.");
                 } else {
                     alert(res.mensaje);
                     btn.disabled = false;
