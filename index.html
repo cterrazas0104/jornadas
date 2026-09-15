@@ -546,7 +546,7 @@
             
             const session = JSON.parse(sessionData);
             if (Date.now() - session.timestamp < MILS_8_HORAS) {
-                return session;
+                return session; 
             } else {
                 localStorage.removeItem('cesba_docente_session');
                 return null;
@@ -637,19 +637,23 @@
             document.getElementById('vistaEscaner').classList.remove('hidden');
             document.getElementById('labelDocenteCorreo').innerText = sesion.correo;
 
+            // LÓGICA DE ROLES PARA LA INTERFAZ
             const selectAsistencia = document.getElementById('tipoAsistencia');
+            const etiquetaTaller = sesion.tallerAsignado ? `(${sesion.tallerAsignado})` : '(Aula)';
+
             if (sesion.rol === 'general') {
                 selectAsistencia.innerHTML = '<option value="general">1. Conferencia General (Entrada)</option>';
                 selectAsistencia.disabled = true;
                 selectAsistencia.classList.add('bg-gray-200');
             } else if (sesion.rol === 'taller') {
-                selectAsistencia.innerHTML = `<option value="taller">2. Taller Específico (${sesion.tallerAsignado || 'Aula'})</option>`;
+                selectAsistencia.innerHTML = `<option value="taller">2. Taller Específico ${etiquetaTaller}</option>`;
                 selectAsistencia.disabled = true;
                 selectAsistencia.classList.add('bg-gray-200');
             } else {
+                // ROL AMBOS
                 selectAsistencia.innerHTML = `
                     <option value="general">1. Conferencia General (Entrada)</option>
-                    <option value="taller">2. Taller Específico</option>
+                    <option value="taller">2. Taller Específico ${etiquetaTaller}</option>
                 `;
                 selectAsistencia.disabled = false;
                 selectAsistencia.classList.remove('bg-gray-200');
@@ -727,9 +731,16 @@
             })
             .then(res => res.json())
             .then(data => {
-                resDiv.innerText = (data.status === 'éxito' ? '✅ ' : '⚠️ ') + data.mensaje;
-                resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white shadow-md " + 
-                    (data.status === 'éxito' ? 'bg-emerald-600' : 'bg-rose-600');
+                if (data.status === 'éxito') {
+                    resDiv.innerText = '✅ ' + data.mensaje;
+                    resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white shadow-md bg-emerald-600";
+                } else if (data.status === 'aviso') {
+                    resDiv.innerText = 'ℹ️ ' + data.mensaje;
+                    resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-blue-900 shadow-md bg-blue-200 border border-blue-300";
+                } else {
+                    resDiv.innerText = '⚠️ ' + data.mensaje;
+                    resDiv.className = "mt-2 p-3 text-center rounded-xl font-bold text-white shadow-md bg-rose-600";
+                }
             })
             .catch(() => {
                 resDiv.innerText = "❌ Error de conexión al registrar asistencia.";
