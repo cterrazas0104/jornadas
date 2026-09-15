@@ -42,7 +42,6 @@
                 </div>
                 
                 <div id="userInfo" class="hidden items-center space-x-3">
-                    <!-- Indicador de Auto-Actualización en Vivo -->
                     <div class="hidden lg:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-emerald-400 text-xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                         <span id="lblUltimaActualizacion" class="font-medium">En vivo (Cada 60s)</span>
@@ -88,12 +87,15 @@
     <main id="vistaDashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         <!-- PESTAÑAS DE NAVEGACIÓN DENTRO DEL DASHBOARD -->
-        <div class="flex border-b border-gray-200 gap-4">
-            <button id="tabBtnAsistencia" onclick="cambiarTab('asistencia')" class="pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary flex items-center gap-2">
+        <div class="flex border-b border-gray-200 gap-4 overflow-x-auto">
+            <button id="tabBtnAsistencia" onclick="cambiarTab('asistencia')" class="pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary whitespace-nowrap">
                 📊 Asistencia y Listas
             </button>
-            <button id="tabBtnEncuestas" onclick="cambiarTab('encuestas')" class="pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary flex items-center gap-2">
+            <button id="tabBtnEncuestas" onclick="cambiarTab('encuestas')" class="pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary whitespace-nowrap">
                 ⭐ Resultados de Encuestas
+            </button>
+            <button id="tabBtnConstancias" onclick="cambiarTab('constancias')" class="pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary whitespace-nowrap flex items-center gap-1">
+                🎓 Constancias (Diseño)
             </button>
         </div>
 
@@ -160,7 +162,6 @@
                         <button onclick="descargarPlantillaTalleres()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5">
                             📥 Descargar Plantilla (CSV)
                         </button>
-
                         <label class="bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer flex items-center gap-1.5">
                             📤 Subir Archivo CSV
                             <input type="file" id="inputCSV" accept=".csv" class="hidden" onchange="procesarCSV(this)">
@@ -172,7 +173,7 @@
             </div>
         </div>
 
-        <!-- CONTENIDO PESTAÑA 2: RESULTADOS DE ENCUESTAS MEJORADO -->
+        <!-- CONTENIDO PESTAÑA 2: RESULTADOS DE ENCUESTAS -->
         <div id="tabContentEncuestas" class="hidden space-y-8">
             
             <!-- TARJETAS DE MÉTIRICAS GLOBALES DE ENCUESTA -->
@@ -190,64 +191,104 @@
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Claridad Global Talleristas</span>
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Claridad Talleristas</span>
                     <div id="kpiPromedioClaridadGlobal" class="text-4xl font-black text-indigo-600 mt-2">0.0 / 5</div>
-                    <span class="text-xs text-gray-500 mt-1 block">Promedio de las explicaciones</span>
+                    <span class="text-xs text-gray-500 mt-1 block">Promedio Global</span>
                 </div>
             </div>
 
-            <!-- GRÁFICOS VISUALES MEJORADOS -->
+            <!-- GRÁFICOS VISUALES -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Gráfico de Plataforma Digital -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación de Plataforma Digital</h3>
+                            <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-1 rounded">NUEVO SISTEMA</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-4">Aceptación del registro web y códigos QR</p>
+                    </div>
+                    <div class="relative max-w-xs mx-auto w-full h-64">
+                        <canvas id="chartPlataforma"></canvas>
+                    </div>
+                </div>
+
                 <!-- Gráfico de Dona: Opinión General -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación General del Evento</h3>
+                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación del Evento Completo</h3>
                         <p class="text-xs text-gray-500 mb-4">¿Cómo calificaron los alumnos la jornada?</p>
                     </div>
                     <div class="relative max-w-xs mx-auto w-full h-64">
                         <canvas id="chartCalificacionGeneral"></canvas>
                     </div>
                 </div>
+            </div>
 
-                <!-- Gráfico de Barras: Lo que más gustó -->
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Lo Que Más Gustó (Excluyendo Talleres)</h3>
-                        <p class="text-xs text-gray-500 mb-4">Métricas de experiencia general y logística</p>
-                    </div>
-                    <div class="relative w-full h-64">
-                        <canvas id="chartLoQueMasGusto"></canvas>
-                    </div>
+            <!-- RANKING DE TALLERISTAS -->
+            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <h3 class="text-lg font-bold text-cesba-blue mb-1">Ranking de Calidad Académica (Talleristas)</h3>
+                <p class="text-xs text-gray-500 mb-4">Ordenados de mayor a menor según la evaluación de los alumnos.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs uppercase bg-gray-50 text-gray-500">
+                            <tr>
+                                <th class="p-3">Pos.</th>
+                                <th class="p-3">Instructor</th>
+                                <th class="p-3">Taller Impartido</th>
+                                <th class="p-3 text-center">Calificación (1-5)</th>
+                                <th class="p-3 text-center">Encuestas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaRankingInstructores"></tbody>
+                    </table>
                 </div>
             </div>
 
             <!-- ANÁLISIS INDIVIDUAL POR TALLERISTA -->
             <div class="space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-xl font-bold text-cesba-blue">Desempeño y Feedback por Tallerista</h3>
-                        <p class="text-xs text-gray-500">Evaluación específica de claridad y comentarios por cada taller impartido</p>
-                    </div>
-                </div>
+                <h3 class="text-xl font-bold text-cesba-blue">Feedback cualitativo por Taller</h3>
                 <div id="contenedorStatsTalleres" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
 
-            <!-- SUGERENCIAS E IDEAS FUTURAS -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-cesba-blue">💡 Ideas de Temas para 2027</h3>
-                        <span id="badgeTemasCount" class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-0.5 rounded-full">0 ideas</span>
-                    </div>
-                    <div id="listTemasFuturos" class="max-h-80 overflow-y-auto space-y-2 pr-2 text-xs text-gray-700"></div>
-                </div>
+        </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-cesba-blue">💬 Sugerencias de Logística</h3>
-                        <span id="badgeSugCount" class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full">0 comentarios</span>
-                    </div>
-                    <div id="listSugerencias" class="max-h-80 overflow-y-auto space-y-2 pr-2 text-xs text-gray-700"></div>
+        <!-- CONTENIDO PESTAÑA 3: CONSTANCIAS -->
+        <div id="tabContentConstancias" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl border border-gray-200 shadow-sm gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-cesba-blue">Panel de Emisión de Constancias</h3>
+                    <p class="text-xs text-gray-500 mt-1">Aquí monitoreas quién ya cumplió con su Asistencia + Encuesta, listos para enviar a Diseño.</p>
+                </div>
+                <button onclick="descargarExcelConstancias()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                    📊 Exportar a Excel
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-4">
+                <div class="bg-white p-4 rounded-xl border border-emerald-200 bg-emerald-50">
+                    <span class="text-xs font-bold text-emerald-700 uppercase">Listos para Constancia</span>
+                    <div id="kpiConstanciasListas" class="text-3xl font-black text-emerald-600 mt-1">0</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-amber-200 bg-amber-50">
+                    <span class="text-xs font-bold text-amber-700 uppercase">Faltan de Encuesta</span>
+                    <div id="kpiConstanciasPendientes" class="text-3xl font-black text-amber-600 mt-1">0</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs uppercase bg-gray-50 text-gray-500 border-b">
+                            <tr>
+                                <th class="p-4">Matrícula</th>
+                                <th class="p-4">Nombre del Alumno</th>
+                                <th class="p-4">Taller Acreditado</th>
+                                <th class="p-4 text-center">Estado Constancia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaConstanciasBody" class="divide-y divide-gray-100"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -264,7 +305,7 @@
         let intervaloAutoRefresh = null;
 
         let chartGralInstance = null;
-        let chartGustoInstance = null;
+        let chartPlatInstance = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const sesion = obtenerSesionAdminValida();
@@ -286,12 +327,7 @@
             const msg = document.getElementById('msgLogin');
             const btn = document.getElementById('btnLogin');
 
-            if (!correo || !pass) {
-                msg.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
-                msg.innerText = "Ingresa usuario y contraseña.";
-                msg.classList.remove('hidden');
-                return;
-            }
+            if (!correo || !pass) return;
 
             btn.disabled = true;
             btn.innerText = "Verificando...";
@@ -312,11 +348,6 @@
                     msg.classList.remove('hidden');
                 }
             })
-            .catch(() => {
-                msg.className = "text-xs text-center font-bold p-3 rounded-lg bg-rose-100 text-rose-700";
-                msg.innerText = "Error al autenticar con el servidor.";
-                msg.classList.remove('hidden');
-            })
             .finally(() => {
                 btn.disabled = false;
                 btn.innerText = "Ingresar al Panel";
@@ -330,22 +361,14 @@
             document.getElementById('userInfo').classList.add('flex');
             document.getElementById('labelAdminCorreo').innerText = correo;
             
-            // Carga inicial
             recargarDatos();
-
-            // Auto-actualización constante en vivo cada 60 segundos
             if (!intervaloAutoRefresh) {
-                intervaloAutoRefresh = setInterval(() => {
-                    recargarDatos(true);
-                }, 60000);
+                intervaloAutoRefresh = setInterval(() => { recargarDatos(true); }, 60000);
             }
         }
 
         function cerrarSesionAdmin() {
-            if (intervaloAutoRefresh) {
-                clearInterval(intervaloAutoRefresh);
-                intervaloAutoRefresh = null;
-            }
+            if (intervaloAutoRefresh) clearInterval(intervaloAutoRefresh);
             localStorage.removeItem('cesba_admin_session');
             location.reload();
         }
@@ -355,9 +378,7 @@
             if (!correo) { cerrarSesionAdmin(); return; }
 
             const lblTime = document.getElementById('lblUltimaActualizacion');
-            if (lblTime && !silencioso) {
-                lblTime.innerText = "Sincronizando...";
-            }
+            if (lblTime && !silencioso) lblTime.innerText = "Sincronizando...";
 
             fetch(apiUrl, {
                 method: 'POST',
@@ -368,41 +389,28 @@
                 if (res.status === 'éxito') {
                     datosGlobales = res.data;
                     renderizarDashboard(res.data);
-                    
-                    if (lblTime) {
-                        const ahora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-                        lblTime.innerText = `En vivo (${ahora})`;
-                    }
-                } else {
-                    if (!silencioso) alert(res.mensaje);
+                    if (lblTime) lblTime.innerText = `En vivo (${new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })})`;
                 }
-            })
-            .catch(() => {
-                if (lblTime) lblTime.innerText = "Error de conexión";
             });
         }
 
         function cambiarTab(tab) {
-            const btnAsis = document.getElementById('tabBtnAsistencia');
-            const btnEnc = document.getElementById('tabBtnEncuestas');
-            const contAsis = document.getElementById('tabContentAsistencia');
-            const contEnc = document.getElementById('tabContentEncuestas');
-
-            if (tab === 'asistencia') {
-                btnAsis.className = "pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary flex items-center gap-2";
-                btnEnc.className = "pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary flex items-center gap-2";
-                contAsis.classList.remove('hidden');
-                contEnc.classList.add('hidden');
-            } else {
-                btnEnc.className = "pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary flex items-center gap-2";
-                btnAsis.className = "pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary flex items-center gap-2";
-                contEnc.classList.remove('hidden');
-                contAsis.classList.add('hidden');
-            }
+            const tabs = ['Asistencia', 'Encuestas', 'Constancias'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tabBtn' + t);
+                const content = document.getElementById('tabContent' + t);
+                if (t.toLowerCase() === tab) {
+                    btn.className = "pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary whitespace-nowrap";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary whitespace-nowrap";
+                    content.classList.add('hidden');
+                }
+            });
         }
 
         function renderizarDashboard(data) {
-            // KPIs Asistencia
+            // ================== PESTAÑA 1: ASISTENCIA ==================
             const ins = data.resumen.totalInscritos;
             const gen = data.resumen.asistenciaGeneral;
             const tal = data.resumen.asistenciaTalleres;
@@ -411,17 +419,14 @@
             document.getElementById('kpiGeneral').innerText = gen;
             document.getElementById('kpiTalleres').innerText = tal;
             document.getElementById('kpiTotalTalleres').innerText = data.talleres.length;
-
             document.getElementById('kpiPorcentajeGeneral').innerText = `${ins > 0 ? Math.round((gen / ins) * 100) : 0}% de asistencia a entrada`;
             document.getElementById('kpiPorcentajeTalleres').innerText = `${ins > 0 ? Math.round((tal / ins) * 100) : 0}% de asistencia a talleres`;
 
-            // Talleres Grid
             const contenedor = document.getElementById('contenedorTalleres');
             contenedor.innerHTML = '';
 
             data.talleres.forEach(taller => {
                 const pctOcupacion = taller.cupoMaximo > 0 ? Math.round((taller.inscritos / taller.cupoMaximo) * 100) : 0;
-                
                 contenedor.innerHTML += `
                     <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
                         <div class="flex justify-between items-start">
@@ -457,90 +462,114 @@
                 `;
             });
 
-            // RENDERIZAR MÉTRICAS DE ENCUESTAS
+            // ================== PESTAÑA 2: ENCUESTAS Y RANKING ==================
             const enc = data.encuestas;
             document.getElementById('kpiTotalEncuestas').innerText = enc.totalRespuestas;
-            const pctPart = gen > 0 ? Math.round((enc.totalRespuestas / gen) * 100) : 0;
-            document.getElementById('kpiParticipacionEncuesta').innerText = `${pctPart}% de los asistentes respondieron`;
+            document.getElementById('kpiParticipacionEncuesta').innerText = `${gen > 0 ? Math.round((enc.totalRespuestas / gen) * 100) : 0}% de los asistentes respondieron`;
 
-            // Score de satisfacción general
-            const supero = enc.calificacionesGenerales["Superó expectativas"] || 0;
-            const muyBien = enc.calificacionesGenerales["Estuvo muy bien"] || 0;
-            const pos = supero + muyBien;
-            const pctSat = enc.totalRespuestas > 0 ? Math.round((pos / enc.totalRespuestas) * 100) : 0;
-            document.getElementById('kpiSatisfaccionScore').innerText = `${pctSat}%`;
+            const pos = (enc.calificacionesGenerales["Superó expectativas"] || 0) + (enc.calificacionesGenerales["Estuvo muy bien"] || 0);
+            document.getElementById('kpiSatisfaccionScore').innerText = `${enc.totalRespuestas > 0 ? Math.round((pos / enc.totalRespuestas) * 100) : 0}%`;
 
-            // Promedio Global de Claridad
-            let sumaGlobalClaridad = 0;
-            let countGlobalClaridad = 0;
+            let sumaG = 0, countG = 0;
+            let rankingData = [];
+
             data.talleres.forEach(t => {
-                sumaGlobalClaridad += t.sumaClaridad;
-                countGlobalClaridad += t.respuestasEncuestaCount;
+                sumaG += t.sumaClaridad;
+                countG += t.respuestasEncuestaCount;
+                if(t.respuestasEncuestaCount > 0) rankingData.push(t);
             });
-            const promGralClaridad = countGlobalClaridad > 0 ? (sumaGlobalClaridad / countGlobalClaridad).toFixed(1) : "0.0";
-            document.getElementById('kpiPromedioClaridadGlobal').innerText = `${promGralClaridad} / 5.0`;
+            document.getElementById('kpiPromedioClaridadGlobal').innerText = `${countG > 0 ? (sumaG / countG).toFixed(1) : "0.0"} / 5.0`;
 
-            // RENDERIZAR GRÁFICO 1: DONA CALIFICACIÓN GENERAL
             renderizarGraficoGeneral(enc.calificacionesGenerales);
 
-            // RENDERIZAR GRÁFICO 2: BARRAS LO QUE MÁS GUSTÓ
-            renderizarGraficoGustos(enc.loQueMasGustoMap);
+            // Analizar Sugerencias para extraer la Evaluación de la Plataforma
+            let platData = { "Excelente": 0, "Buena": 0, "Normal": 0, "Complicada": 0 };
+            enc.sugerenciasList.forEach(s => {
+                if(s.includes("Excelente")) platData["Excelente"]++;
+                else if(s.includes("Buena")) platData["Buena"]++;
+                else if(s.includes("Normal")) platData["Normal"]++;
+                else if(s.includes("Complicada")) platData["Complicada"]++;
+            });
+            renderizarGraficoPlataforma(platData);
 
-            // RENDERIZAR FICHAS POR TALLERISTA
+            // Llenar Ranking Semáforo
+            rankingData.sort((a, b) => b.promedioClaridad - a.promedioClaridad);
+            const tablaRank = document.getElementById('tablaRankingInstructores');
+            tablaRank.innerHTML = '';
+            rankingData.forEach((t, i) => {
+                let badgeColor = "bg-emerald-100 text-emerald-800";
+                if (t.promedioClaridad < 4.0) badgeColor = "bg-amber-100 text-amber-800";
+                if (t.promedioClaridad < 3.0) badgeColor = "bg-rose-100 text-rose-800";
+
+                tablaRank.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 font-bold text-gray-500">#${i + 1}</td>
+                        <td class="p-3 font-bold text-cesba-blue">${t.instructor}</td>
+                        <td class="p-3 text-gray-600">${t.nombre}</td>
+                        <td class="p-3 text-center">
+                            <span class="px-3 py-1 rounded-full text-xs font-black ${badgeColor}">${t.promedioClaridad}</span>
+                        </td>
+                        <td class="p-3 text-center text-xs text-gray-500">${t.respuestasEncuestaCount} opiniones</td>
+                    </tr>
+                `;
+            });
+
+            // Fichas Cualitativas
             const contTalStats = document.getElementById('contenedorStatsTalleres');
             contTalStats.innerHTML = '';
             data.talleres.forEach(t => {
-                let comentariosHTML = '';
-                if (t.comentariosTaller && t.comentariosTaller.length > 0) {
-                    comentariosHTML = t.comentariosTaller.map(c => `<li class="border-b border-gray-100 pb-1 font-normal text-gray-600">"${c}"</li>`).join('');
-                } else {
-                    comentariosHTML = '<li class="text-gray-400 italic font-normal">Sin comentarios adicionales.</li>';
-                }
-
-                let otrosTalleresHTML = '';
-                if (t.otrosTalleresDeseados && t.otrosTalleresDeseados.length > 0) {
-                    otrosTalleresHTML = t.otrosTalleresDeseados.map(o => `<span class="inline-block bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-md text-[11px]">${o}</span>`).join(' ');
-                }
+                if(t.respuestasEncuestaCount === 0) return;
+                let comentariosHTML = t.comentariosTaller.length > 0 
+                    ? t.comentariosTaller.map(c => `<li class="border-b border-gray-100 pb-1 font-normal text-gray-600">"${c}"</li>`).join('')
+                    : '<li class="text-gray-400 italic font-normal">Sin comentarios escritos.</li>';
 
                 contTalStats.innerHTML += `
-                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-2.5 py-1 rounded-md uppercase">${t.id}</span>
-                                <h4 class="text-base font-bold text-cesba-blue mt-1">${t.nombre}</h4>
-                                <p class="text-xs text-gray-500 font-medium">👨‍🏫 Instructor: ${t.instructor}</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="bg-amber-100 text-amber-800 text-sm font-black px-3 py-1 rounded-xl block">⭐ ${t.promedioClaridad} / 5</span>
-                                <span class="text-[10px] text-gray-400 mt-1 block">${t.respuestasEncuestaCount} encuestas</span>
-                            </div>
-                        </div>
-
-                        ${otrosTalleresHTML ? `
-                            <div class="pt-2 border-t">
-                                <span class="text-[11px] font-bold text-gray-500 block mb-1">Otros talleres que le pidieron a este instructor:</span>
-                                <div class="flex flex-wrap gap-1">${otrosTalleresHTML}</div>
-                            </div>
-                        ` : ''}
-
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <h4 class="text-sm font-bold text-cesba-blue mb-1">${t.instructor}</h4>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase mb-2">${t.nombre}</p>
                         <div class="pt-2 border-t">
-                            <span class="text-[11px] font-bold text-gray-500 block mb-1">Comentarios recibidos:</span>
-                            <ul class="max-h-28 overflow-y-auto space-y-1.5 text-xs pr-1">${comentariosHTML}</ul>
+                            <ul class="max-h-24 overflow-y-auto space-y-1.5 text-xs pr-1">${comentariosHTML}</ul>
                         </div>
                     </div>
                 `;
             });
 
-            // Listas
-            const listFut = document.getElementById('listTemasFuturos');
-            document.getElementById('badgeTemasCount').innerText = `${enc.temasFuturosList.length} ideas`;
-            listFut.innerHTML = enc.temasFuturosList.map(item => `<div class="p-2.5 bg-gray-50 rounded-xl border border-gray-100 shadow-2xs font-medium">💡 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros.</p>';
 
-            const listSug = document.getElementById('listSugerencias');
-            document.getElementById('badgeSugCount').innerText = `${enc.sugerenciasList.length} comentarios`;
-            listSug.innerHTML = enc.sugerenciasList.map(item => `<div class="p-2.5 bg-gray-50 rounded-xl border border-gray-100 shadow-2xs font-medium">💬 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros.</p>';
+            // ================== PESTAÑA 3: CONSTANCIAS ==================
+            const bodyConstancias = document.getElementById('tablaConstanciasBody');
+            bodyConstancias.innerHTML = '';
+            let listos = 0;
+            let pendientes = 0;
+
+            data.talleres.forEach(t => {
+                t.alumnos.forEach(a => {
+                    if (a.asistioGeneral || a.asistioTaller) {
+                        let statusHTML = '';
+                        if (a.contestoEncuesta) {
+                            listos++;
+                            statusHTML = '<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">✅ Lista para Emitir</span>';
+                        } else {
+                            pendientes++;
+                            statusHTML = '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">⏳ Falta Encuesta</span>';
+                        }
+
+                        bodyConstancias.innerHTML += `
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-4 font-bold text-gray-700">${a.matricula}</td>
+                                <td class="p-4 text-gray-600">${a.nombre}</td>
+                                <td class="p-4 text-xs font-semibold text-cesba-primary">${t.nombre}</td>
+                                <td class="p-4 text-center">${statusHTML}</td>
+                            </tr>
+                        `;
+                    }
+                });
+            });
+
+            document.getElementById('kpiConstanciasListas').innerText = listos;
+            document.getElementById('kpiConstanciasPendientes').innerText = pendientes;
         }
 
+        // GRÁFICOS
         function renderizarGraficoGeneral(calificaciones) {
             const ctx = document.getElementById('chartCalificacionGeneral').getContext('2d');
             if (chartGralInstance) chartGralInstance.destroy();
@@ -548,7 +577,7 @@
             chartGralInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['🚀 Superó expectativas', '🤩 Estuvo muy bien', '🧐 Áreas de mejora', '😟 No fue lo esperado'],
+                    labels: ['🚀 Superó expectativas', '🤩 Muy bien', '🧐 Áreas de mejora', '😟 No esperado'],
                     datasets: [{
                         data: [
                             calificaciones["Superó expectativas"] || 0,
@@ -559,59 +588,63 @@
                         backgroundColor: ['#10b981', '#1e3a8a', '#f59e0b', '#f43f5e']
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
         }
 
-        function renderizarGraficoGustos(gustosMap) {
-            const ctx = document.getElementById('chartLoQueMasGusto').getContext('2d');
-            if (chartGustoInstance) chartGustoInstance.destroy();
+        function renderizarGraficoPlataforma(dataObj) {
+            const ctx = document.getElementById('chartPlataforma').getContext('2d');
+            if (chartPlatInstance) chartPlatInstance.destroy();
 
-            chartGustoInstance = new Chart(ctx, {
-                type: 'bar',
+            chartPlatInstance = new Chart(ctx, {
+                type: 'pie',
                 data: {
-                    labels: ['🎤 Conferencia', '📋 Organización', '🤝 Ambiente', '☕ Descansos'],
+                    labels: ['📱 Excelente/Ágil', '♻️ Buena', '😐 Normal', '📉 Complicada'],
                     datasets: [{
-                        label: 'Votos de Alumnos',
-                        data: [
-                            gustosMap["La Conferencia"] || 0,
-                            gustosMap["La Organización"] || 0,
-                            gustosMap["El Ambiente"] || 0,
-                            gustosMap["Los Descansos"] || 0
-                        ],
-                        backgroundColor: '#ad8ad4',
-                        borderRadius: 8
+                        data: [ dataObj["Excelente"], dataObj["Buena"], dataObj["Normal"], dataObj["Complicada"] ],
+                        backgroundColor: ['#4f46e5', '#8b5cf6', '#cbd5e1', '#94a3b8']
                     }]
                 },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { beginAtZero: true, grid: { display: false } },
-                        y: { grid: { display: false } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
         }
 
+        // EXPORTACIÓN A EXCEL (CONSTANCIAS)
+        function descargarExcelConstancias() {
+            if (!datosGlobales) return;
+
+            let csvContent = "\uFEFF"; // Para UTF-8
+            csvContent += "Matrícula,Nombre del Alumno,Semestre,Taller Acreditado,Estado\n";
+
+            datosGlobales.talleres.forEach(t => {
+                t.alumnos.forEach(a => {
+                    if (a.asistioGeneral || a.asistioTaller) {
+                        let estado = a.contestoEncuesta ? "LISTA PARA EMITIR" : "PENDIENTE DE ENCUESTA";
+                        // Agregamos columna vacía para "Semestre" para que Diseño la llene si la necesita
+                        csvContent += `"${a.matricula}","${a.nombre}","","${t.nombre}","${estado}"\n`;
+                    }
+                });
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Reporte_Constancias_Jornada2026.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // FUNCIONES DE SOPORTE QUE YA TENÍAS
         function filtrarAlumnosGlobal() {
             const query = document.getElementById('inputBuscarAlumno').value.toLowerCase().trim();
             const resDiv = document.getElementById('resultadoBusquedaGlobal');
             const body = document.getElementById('tablaBusquedaBody');
-
             if (!query || !datosGlobales) { resDiv.classList.add('hidden'); return; }
 
             body.innerHTML = '';
             let contador = 0;
-
             datosGlobales.talleres.forEach(t => {
                 t.alumnos.forEach(a => {
                     if (a.matricula.toString().toLowerCase().includes(query) || a.nombre.toLowerCase().includes(query)) {
@@ -628,12 +661,12 @@
                     }
                 });
             });
-
             if (contador > 0) resDiv.classList.remove('hidden');
             else resDiv.classList.add('hidden');
         }
 
         function descargarPDFTaller(idTaller) {
+            // (Esta función se mantiene igual, no la modificamos)
             if (!datosGlobales) return;
             const taller = datosGlobales.talleres.find(t => t.id === idTaller);
             if (!taller) return;
@@ -686,137 +719,30 @@
                 </div>
             `;
 
-            const opt = {
-                margin: 10,
-                filename: `Lista_Asistencia_${taller.id}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
+            const opt = { margin: 10, filename: `Lista_Asistencia_${taller.id}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
             html2pdf().set(opt).from(area).save();
         }
 
         function dispararEncuestas() {
             const defaultUrl = window.location.origin + window.location.pathname.replace('dashboard.html', 'encuesta.html');
             const baseUrlEncuesta = prompt("Confirma la URL pública de la encuesta en tu sitio:", defaultUrl);
-            
             if (!baseUrlEncuesta) return;
 
             if (confirm("¿Confirmas que deseas enviar el correo con la encuesta a TODOS los alumnos que registraron asistencia hoy?")) {
-                const correo = obtenerSesionAdminValida();
-                fetch(apiUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'enviarEncuestas', correoAdmin: correo, baseUrlEncuesta: baseUrlEncuesta })
-                })
+                fetch(apiUrl, { method: 'POST', body: JSON.stringify({ action: 'enviarEncuestas', correoAdmin: obtenerSesionAdminValida(), baseUrlEncuesta: baseUrlEncuesta }) })
                 .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'éxito') alert("¡Éxito! " + data.mensaje);
-                    else alert("Error: " + data.mensaje);
-                })
-                .catch(() => alert("Error al procesar el envío masivo."));
+                .then(data => { if (data.status === 'éxito') alert("¡Éxito! " + data.mensaje); else alert("Error: " + data.mensaje); });
             }
         }
 
         function descargarPlantillaTalleres() {
-            let csvContent = "\uFEFF";
-            csvContent += "ID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos\n";
+            let csvContent = "\uFEFFID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos\n";
             csvContent += "T01,\"Introducción a los Contenedores\",\"Guillermo Pucheta\",25,\"Laptop con Windows 10/11 o macOS, 8GB RAM, Virtualization activa en BIOS.\"\n";
-            csvContent += "T02,\"MongoDB\",\"Mtro. César Terrazas\",30,\"Laptop con VirtualBox instalado y 30GB libres en disco duro.\"\n";
-
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", "Plantilla_Oferta_Talleres_2026.csv");
-            document.body.appendChild(link);
+            link.href = URL.createObjectURL(blob);
+            link.download = "Plantilla_Oferta_Talleres_2026.csv";
             link.click();
-            document.body.removeChild(link);
-        }
-
-        function parsearLineaCSV(linea) {
-            let resultado = [];
-            let celda = '';
-            let enComillas = false;
-
-            for (let i = 0; i < linea.length; i++) {
-                let char = linea[i];
-
-                if (enComillas) {
-                    if (char === '"') {
-                        if (i + 1 < linea.length && linea[i + 1] === '"') {
-                            celda += '"';
-                            i++;
-                        } else {
-                            enComillas = false;
-                        }
-                    } else {
-                        celda += char;
-                    }
-                } else {
-                    if (char === '"') {
-                        enComillas = true;
-                    } else if (char === ',') {
-                        resultado.push(celda.trim());
-                        celda = '';
-                    } else {
-                        celda += char;
-                    }
-                }
-            }
-            resultado.push(celda.trim());
-            return resultado;
-        }
-
-        function procesarCSV(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                const lineas = text.split(/\r\n|\n/);
-                let matriz = [];
-
-                for (let i = 0; i < lineas.length; i++) {
-                    const lineaLimpia = lineas[i].trim();
-                    if (lineaLimpia !== '') {
-                        matriz.push(parsearLineaCSV(lineaLimpia));
-                    }
-                }
-
-                if (matriz.length < 2) {
-                    alert("El archivo CSV no contiene información válida.");
-                    return;
-                }
-
-                if (confirm(`¿Confirmas que deseas actualizar la oferta con ${matriz.length - 1} talleres? Esto sobrescribirá la lista actual.`)) {
-                    const correo = obtenerSesionAdminValida();
-                    
-                    fetch(apiUrl, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'actualizarTalleresCSV',
-                            correoAdmin: correo,
-                            matrizTalleres: matriz
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.status === 'éxito') {
-                            alert("¡Éxito! " + data.mensaje);
-                            recargarDatos();
-                        } else {
-                            alert("Error: " + data.mensaje);
-                        }
-                    })
-                    .catch(() => alert("Error de red al intentar actualizar los talleres."));
-                }
-                
-                input.value = '';
-            };
-
-            reader.readAsText(file, "UTF-8");
         }
     </script>
 </body>
