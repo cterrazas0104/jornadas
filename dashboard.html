@@ -197,58 +197,81 @@
                 </div>
             </div>
 
-            <!-- GRÁFICOS VISUALES -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Gráfico de Plataforma Digital -->
+            <!-- GRÁFICOS VISUALES RESTAURADOS -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 1. Gráfico de Plataforma Digital -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación de Plataforma Digital</h3>
-                            <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-1 rounded">NUEVO SISTEMA</span>
+                            <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación Digital</h3>
                         </div>
                         <p class="text-xs text-gray-500 mb-4">Aceptación del registro web y códigos QR</p>
                     </div>
-                    <div class="relative max-w-xs mx-auto w-full h-64">
+                    <div class="relative w-full h-56">
                         <canvas id="chartPlataforma"></canvas>
                     </div>
                 </div>
 
-                <!-- Gráfico de Dona: Opinión General -->
+                <!-- 2. Gráfico de Dona: Opinión General -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación del Evento Completo</h3>
-                        <p class="text-xs text-gray-500 mb-4">¿Cómo calificaron los alumnos la jornada?</p>
+                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación del Evento</h3>
+                        <p class="text-xs text-gray-500 mb-4">Calificación global de la jornada</p>
                     </div>
-                    <div class="relative max-w-xs mx-auto w-full h-64">
+                    <div class="relative w-full h-56">
                         <canvas id="chartCalificacionGeneral"></canvas>
+                    </div>
+                </div>
+
+                <!-- 3. Gráfico de Barras: Lo que más gustó (RESTORED) -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Lo Que Más Gustó</h3>
+                        <p class="text-xs text-gray-500 mb-4">Métricas de experiencia y logística</p>
+                    </div>
+                    <div class="relative w-full h-56">
+                        <canvas id="chartLoQueMasGusto"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- RANKING DE TALLERISTAS -->
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                <h3 class="text-lg font-bold text-cesba-blue mb-1">Ranking de Calidad Académica (Talleristas)</h3>
-                <p class="text-xs text-gray-500 mb-4">Ordenados de mayor a menor según la evaluación de los alumnos.</p>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs uppercase bg-gray-50 text-gray-500">
-                            <tr>
-                                <th class="p-3">Pos.</th>
-                                <th class="p-3">Instructor</th>
-                                <th class="p-3">Taller Impartido</th>
-                                <th class="p-3 text-center">Calificación (1-5)</th>
-                                <th class="p-3 text-center">Encuestas</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaRankingInstructores"></tbody>
-                    </table>
+            <!-- FILA DE TOMA DE DECISIONES PARA 2027 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- RANKING DE TALLERISTAS -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-cesba-blue mb-1">Ranking Semáforo (Talleristas)</h3>
+                    <p class="text-xs text-gray-500 mb-4">Calidad académica evaluada por los alumnos.</p>
+                    <div class="overflow-x-auto max-h-80 overflow-y-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase bg-gray-50 text-gray-500 sticky top-0">
+                                <tr>
+                                    <th class="p-3">Pos.</th>
+                                    <th class="p-3">Instructor</th>
+                                    <th class="p-3 text-center">Calificación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaRankingInstructores"></tbody>
+                        </table>
+                    </div>
                 </div>
+
+                <!-- IDEAS FUTURAS (RESTORED) -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-cesba-blue">💡 Temas pedidos para 2027</h3>
+                        <span id="badgeTemasCount" class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-0.5 rounded-full">0 ideas</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">Nube de intereses tecnológicos (Tags y sugerencias abiertas).</p>
+                    <div id="listTemasFuturos" class="flex-grow max-h-64 overflow-y-auto space-y-2 pr-2 text-xs text-gray-700"></div>
+                </div>
+
             </div>
 
             <!-- ANÁLISIS INDIVIDUAL POR TALLERISTA -->
             <div class="space-y-6">
-                <h3 class="text-xl font-bold text-cesba-blue">Feedback cualitativo por Taller</h3>
-                <div id="contenedorStatsTalleres" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                <h3 class="text-xl font-bold text-cesba-blue">Feedback cualitativo individual por Taller</h3>
+                <div id="contenedorStatsTalleres" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
         </div>
@@ -277,12 +300,13 @@
             </div>
 
             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto max-h-[60vh] overflow-y-auto">
                     <table class="w-full text-sm text-left">
-                        <thead class="text-xs uppercase bg-gray-50 text-gray-500 border-b">
+                        <thead class="text-xs uppercase bg-gray-50 text-gray-500 border-b sticky top-0">
                             <tr>
                                 <th class="p-4">Matrícula</th>
                                 <th class="p-4">Nombre del Alumno</th>
+                                <th class="p-4 text-center">Semestre</th>
                                 <th class="p-4">Taller Acreditado</th>
                                 <th class="p-4 text-center">Estado Constancia</th>
                             </tr>
@@ -306,6 +330,7 @@
 
         let chartGralInstance = null;
         let chartPlatInstance = null;
+        let chartGustoInstance = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const sesion = obtenerSesionAdminValida();
@@ -400,10 +425,10 @@
                 const btn = document.getElementById('tabBtn' + t);
                 const content = document.getElementById('tabContent' + t);
                 if (t.toLowerCase() === tab) {
-                    btn.className = "pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary whitespace-nowrap";
+                    btn.className = "pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary whitespace-nowrap flex items-center gap-1";
                     content.classList.remove('hidden');
                 } else {
-                    btn.className = "pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary whitespace-nowrap";
+                    btn.className = "pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary whitespace-nowrap flex items-center gap-1";
                     content.classList.add('hidden');
                 }
             });
@@ -480,9 +505,10 @@
             });
             document.getElementById('kpiPromedioClaridadGlobal').innerText = `${countG > 0 ? (sumaG / countG).toFixed(1) : "0.0"} / 5.0`;
 
+            // Gráfico 1: Evaluación General
             renderizarGraficoGeneral(enc.calificacionesGenerales);
 
-            // Analizar Sugerencias para extraer la Evaluación de la Plataforma
+            // Gráfico 2: Plataforma Digital (Extraído del campo de sugerencias de la BD)
             let platData = { "Excelente": 0, "Buena": 0, "Normal": 0, "Complicada": 0 };
             enc.sugerenciasList.forEach(s => {
                 if(s.includes("Excelente")) platData["Excelente"]++;
@@ -492,7 +518,10 @@
             });
             renderizarGraficoPlataforma(platData);
 
-            // Llenar Ranking Semáforo
+            // Gráfico 3: Lo que más gustó (RECUPERADO)
+            renderizarGraficoGustos(enc.loQueMasGustoMap);
+
+            // Ranking Semáforo
             rankingData.sort((a, b) => b.promedioClaridad - a.promedioClaridad);
             const tablaRank = document.getElementById('tablaRankingInstructores');
             tablaRank.innerHTML = '';
@@ -505,16 +534,19 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="p-3 font-bold text-gray-500">#${i + 1}</td>
                         <td class="p-3 font-bold text-cesba-blue">${t.instructor}</td>
-                        <td class="p-3 text-gray-600">${t.nombre}</td>
                         <td class="p-3 text-center">
                             <span class="px-3 py-1 rounded-full text-xs font-black ${badgeColor}">${t.promedioClaridad}</span>
                         </td>
-                        <td class="p-3 text-center text-xs text-gray-500">${t.respuestasEncuestaCount} opiniones</td>
                     </tr>
                 `;
             });
 
-            // Fichas Cualitativas
+            // Temas para 2027 (RECUPERADO)
+            const listFut = document.getElementById('listTemasFuturos');
+            document.getElementById('badgeTemasCount').innerText = `${enc.temasFuturosList.length} ideas`;
+            listFut.innerHTML = enc.temasFuturosList.map(item => `<div class="p-2.5 bg-gray-50 rounded-xl border border-gray-100 shadow-sm font-medium">💡 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros aún.</p>';
+
+            // Feedback Cualitativo por Tallerista
             const contTalStats = document.getElementById('contenedorStatsTalleres');
             contTalStats.innerHTML = '';
             data.talleres.forEach(t => {
@@ -528,12 +560,11 @@
                         <h4 class="text-sm font-bold text-cesba-blue mb-1">${t.instructor}</h4>
                         <p class="text-[10px] text-gray-500 font-bold uppercase mb-2">${t.nombre}</p>
                         <div class="pt-2 border-t">
-                            <ul class="max-h-24 overflow-y-auto space-y-1.5 text-xs pr-1">${comentariosHTML}</ul>
+                            <ul class="max-h-32 overflow-y-auto space-y-1.5 text-xs pr-1">${comentariosHTML}</ul>
                         </div>
                     </div>
                 `;
             });
-
 
             // ================== PESTAÑA 3: CONSTANCIAS ==================
             const bodyConstancias = document.getElementById('tablaConstanciasBody');
@@ -547,16 +578,19 @@
                         let statusHTML = '';
                         if (a.contestoEncuesta) {
                             listos++;
-                            statusHTML = '<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">✅ Lista para Emitir</span>';
+                            statusHTML = '<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full w-full block">✅ Lista para Emitir</span>';
                         } else {
                             pendientes++;
-                            statusHTML = '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">⏳ Falta Encuesta</span>';
+                            statusHTML = '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full w-full block">⏳ Falta Encuesta</span>';
                         }
+
+                        let semestreValor = a.semestre ? a.semestre : "-";
 
                         bodyConstancias.innerHTML += `
                             <tr class="hover:bg-gray-50">
                                 <td class="p-4 font-bold text-gray-700">${a.matricula}</td>
                                 <td class="p-4 text-gray-600">${a.nombre}</td>
+                                <td class="p-4 text-center font-bold text-gray-500">${semestreValor}</td>
                                 <td class="p-4 text-xs font-semibold text-cesba-primary">${t.nombre}</td>
                                 <td class="p-4 text-center">${statusHTML}</td>
                             </tr>
@@ -569,7 +603,8 @@
             document.getElementById('kpiConstanciasPendientes').innerText = pendientes;
         }
 
-        // GRÁFICOS
+        // ====== SECCIÓN DE GRÁFICOS CHART.JS ======
+
         function renderizarGraficoGeneral(calificaciones) {
             const ctx = document.getElementById('chartCalificacionGeneral').getContext('2d');
             if (chartGralInstance) chartGralInstance.destroy();
@@ -588,7 +623,7 @@
                         backgroundColor: ['#10b981', '#1e3a8a', '#f59e0b', '#f43f5e']
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
             });
         }
 
@@ -605,11 +640,44 @@
                         backgroundColor: ['#4f46e5', '#8b5cf6', '#cbd5e1', '#94a3b8']
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
             });
         }
 
-// EXPORTACIÓN A EXCEL (CONSTANCIAS)
+        function renderizarGraficoGustos(gustosMap) {
+            const ctx = document.getElementById('chartLoQueMasGusto').getContext('2d');
+            if (chartGustoInstance) chartGustoInstance.destroy();
+
+            chartGustoInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['🎤 Conferencia', '📋 Organización', '🤝 Ambiente', '☕ Descansos'],
+                    datasets: [{
+                        label: 'Votos',
+                        data: [
+                            gustosMap["La conferencia"] || 0,
+                            gustosMap["La organización (registro, horarios, lugar)"] || 0,
+                            gustosMap["El ambiente y la convivencia"] || 0,
+                            gustosMap["Los descansos"] || 0
+                        ],
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0 } },
+                        y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // ====== EXPORTACIÓN A EXCEL (CONSTANCIAS) ======
         function descargarExcelConstancias() {
             if (!datosGlobales) return;
 
@@ -637,7 +705,7 @@
             document.body.removeChild(link);
         }
 
-        // FUNCIONES DE SOPORTE QUE YA TENÍAS
+        // ====== FUNCIONES DE SOPORTE ======
         function filtrarAlumnosGlobal() {
             const query = document.getElementById('inputBuscarAlumno').value.toLowerCase().trim();
             const resDiv = document.getElementById('resultadoBusquedaGlobal');
@@ -667,7 +735,6 @@
         }
 
         function descargarPDFTaller(idTaller) {
-            // (Esta función se mantiene igual, no la modificamos)
             if (!datosGlobales) return;
             const taller = datosGlobales.talleres.find(t => t.id === idTaller);
             if (!taller) return;
@@ -744,6 +811,62 @@
             link.href = URL.createObjectURL(blob);
             link.download = "Plantilla_Oferta_Talleres_2026.csv";
             link.click();
+        }
+
+        function parsearLineaCSV(linea) {
+            let resultado = [];
+            let celda = '';
+            let enComillas = false;
+
+            for (let i = 0; i < linea.length; i++) {
+                let char = linea[i];
+                if (enComillas) {
+                    if (char === '"') {
+                        if (i + 1 < linea.length && linea[i + 1] === '"') { celda += '"'; i++; } 
+                        else { enComillas = false; }
+                    } else { celda += char; }
+                } else {
+                    if (char === '"') { enComillas = true; } 
+                    else if (char === ',') { resultado.push(celda.trim()); celda = ''; } 
+                    else { celda += char; }
+                }
+            }
+            resultado.push(celda.trim());
+            return resultado;
+        }
+
+        function procesarCSV(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lineas = text.split(/\r\n|\n/);
+                let matriz = [];
+
+                for (let i = 0; i < lineas.length; i++) {
+                    const lineaLimpia = lineas[i].trim();
+                    if (lineaLimpia !== '') matriz.push(parsearLineaCSV(lineaLimpia));
+                }
+
+                if (matriz.length < 2) { alert("El archivo CSV no contiene información válida."); return; }
+
+                if (confirm(`¿Confirmas que deseas actualizar la oferta con ${matriz.length - 1} talleres? Esto sobrescribirá la lista actual.`)) {
+                    fetch(apiUrl, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'actualizarTalleresCSV', correoAdmin: obtenerSesionAdminValida(), matrizTalleres: matriz })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'éxito') { alert("¡Éxito! " + data.mensaje); recargarDatos(); } 
+                        else alert("Error: " + data.mensaje);
+                    })
+                    .catch(() => alert("Error de red al intentar actualizar los talleres."));
+                }
+                input.value = '';
+            };
+            reader.readAsText(file, "UTF-8");
         }
     </script>
 </body>
