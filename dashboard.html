@@ -609,7 +609,7 @@
             });
         }
 
-        // EXPORTACIÓN A EXCEL (CONSTANCIAS)
+// EXPORTACIÓN A EXCEL (CONSTANCIAS)
         function descargarExcelConstancias() {
             if (!datosGlobales) return;
 
@@ -620,8 +620,9 @@
                 t.alumnos.forEach(a => {
                     if (a.asistioGeneral || a.asistioTaller) {
                         let estado = a.contestoEncuesta ? "LISTA PARA EMITIR" : "PENDIENTE DE ENCUESTA";
-                        // Agregamos columna vacía para "Semestre" para que Diseño la llene si la necesita
-                        csvContent += `"${a.matricula}","${a.nombre}","","${t.nombre}","${estado}"\n`;
+                        let semestreValor = a.semestre ? a.semestre : ""; // Jala el grado de la hoja Alumnos
+                        
+                        csvContent += `"${a.matricula}","${a.nombre}","${semestreValor}","${t.nombre}","${estado}"\n`;
                     }
                 });
             });
