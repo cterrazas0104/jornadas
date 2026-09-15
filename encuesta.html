@@ -80,11 +80,11 @@
                 <div class="space-y-3">
                     <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-purple-50 transition">
                         <input type="checkbox" name="loQueMasGusto" value="La conferencia" class="accent-cesba-primary w-5 h-5">
-                        <span class="text-sm">🎤 La conferencia magisterial</span>
+                        <span class="text-sm">🎤 La conferencia magistral</span>
                     </label>
                     <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-purple-50 transition">
                         <input type="checkbox" name="loQueMasGusto" value="La organización (registro, horarios, lugar)" class="accent-cesba-primary w-5 h-5">
-                        <span class="text-sm">📋 La organización y logística</span>
+                        <span class="text-sm">📋 La organización y logística general</span>
                     </label>
                     <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-purple-50 transition">
                         <input type="checkbox" name="loQueMasGusto" value="El ambiente y la convivencia" class="accent-cesba-primary w-5 h-5">
@@ -97,17 +97,47 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 3: EVALUACIÓN DE TALLERISTA -->
+            <!-- SECCIÓN 3: EVALUACIÓN DE PLATAFORMA DIGITAL (LA NUEVA PREGUNTA) -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg border border-cesba-purple/30 bg-purple-50/20 space-y-4">
+                <div class="inline-block bg-cesba-purple/20 text-cesba-purpleDark font-bold px-3 py-1 rounded-md text-xs mb-2">
+                    Innovación Tecnológica 2026
+                </div>
+                <h2 class="text-lg font-bold text-cesba-blue">3. Este año digitalizamos el evento (registro web, pases QR y pases de lista ágiles). ¿Qué te pareció esta nueva experiencia digital? *</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="border-2 border-purple-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3 bg-white">
+                        <input type="radio" name="evaluacionPlataforma" value="Excelente, proceso muy ágil y moderno." required class="accent-cesba-primary w-5 h-5">
+                        <span class="text-sm font-medium">📱 Excelente, proceso muy ágil y moderno.</span>
+                    </label>
+
+                    <label class="border-2 border-purple-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3 bg-white">
+                        <input type="radio" name="evaluacionPlataforma" value="Buena, es mucho mejor que usar papel." class="accent-cesba-primary w-5 h-5">
+                        <span class="text-sm font-medium">♻️ Buena, es mucho mejor que usar papel.</span>
+                    </label>
+
+                    <label class="border-2 border-purple-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3 bg-white">
+                        <input type="radio" name="evaluacionPlataforma" value="Normal, cumplió su función básica." class="accent-cesba-primary w-5 h-5">
+                        <span class="text-sm font-medium">😐 Normal, cumplió su función básica.</span>
+                    </label>
+
+                    <label class="border-2 border-purple-100 p-4 rounded-2xl cursor-pointer hover:border-cesba-purple transition flex items-center gap-3 bg-white">
+                        <input type="radio" name="evaluacionPlataforma" value="Complicada, prefiero el método anterior." class="accent-cesba-primary w-5 h-5">
+                        <span class="text-sm font-medium">📉 Complicada, prefiero el método anterior.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: EVALUACIÓN DE TALLERISTA -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
-                <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 mb-4">
+                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 mb-4">
                     <span class="text-xs font-bold text-cesba-primary uppercase tracking-wider block">Taller evaluado:</span>
                     <h3 id="lblNombreTaller" class="text-lg font-black text-cesba-blue">Cargando...</h3>
                     <p id="lblInstructor" class="text-xs text-gray-600 font-medium">Instructor: Cargando...</p>
                 </div>
 
-                <h2 class="text-lg font-bold text-cesba-blue">3. ¿Qué tan útil y clara fue la explicación del Tallerista? *</h2>
+                <h2 class="text-lg font-bold text-cesba-blue">4. ¿Qué tan útil y clara fue la explicación del Tallerista? *</h2>
                 
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl">
+                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
                     <span class="text-xs font-bold text-gray-500">Poco claro</span>
                     <div class="flex gap-4">
                         <label class="flex flex-col items-center gap-1 cursor-pointer"><input type="radio" name="claridadTallerista" value="1" required class="accent-cesba-primary w-5 h-5"><span class="text-xs font-bold">1</span></label>
@@ -120,13 +150,12 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 4: NUBE DE ETIQUETAS (IDEAS 2027) -->
+            <!-- SECCIÓN 5: NUBE DE ETIQUETAS (IDEAS 2027) -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
-                <h2 class="text-lg font-bold text-cesba-blue">4. Para 2027, ¿qué tecnología te M-U-E-R-E-S por ver?</h2>
+                <h2 class="text-lg font-bold text-cesba-blue">5. Para 2027, ¿qué tecnología te M-U-E-R-E-S por ver?</h2>
                 <p class="text-xs text-gray-500">Selecciona todas las que te interesen:</p>
                 
                 <div class="flex flex-wrap gap-2" id="contenedorTags">
-                    <!-- Los tags se generan por CSS y JS -->
                     <label class="cursor-pointer">
                         <input type="checkbox" name="temasFuturosTag" value="Inteligencia Artificial" class="hidden peer">
                         <div class="px-4 py-2 rounded-full border border-gray-200 text-sm peer-checked:bg-cesba-primary peer-checked:text-white peer-checked:border-cesba-primary transition font-medium bg-gray-50">🤖 Inteligencia Artificial</div>
@@ -156,10 +185,10 @@
                 <input type="text" id="otroTallerDeseado" placeholder="Otro tema o tecnología específica que quieras sugerir..." class="w-full mt-3 p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
             </div>
 
-            <!-- SECCIÓN 5: COMENTARIOS FINALES -->
+            <!-- SECCIÓN 6: COMENTARIOS FINALES -->
             <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 space-y-4">
-                <h2 class="text-lg font-bold text-cesba-blue">5. ¿Tienes algún otro comentario o sugerencia? (Opcional)</h2>
-                <textarea id="comentarioTaller" rows="3" placeholder="Comentarios sobre el tallerista, el internet, la organización, etc." class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple"></textarea>
+                <h2 class="text-lg font-bold text-cesba-blue">6. ¿Tienes algún otro comentario o sugerencia? (Opcional)</h2>
+                <textarea id="comentarioTaller" rows="3" placeholder="Tus impresiones finales sobre la nueva plataforma digital web, la organización, el tallerista, etc." class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple"></textarea>
             </div>
 
             <button id="btnEnviar" type="submit" class="w-full bg-cesba-primary hover:bg-blue-900 text-white font-bold py-4 rounded-2xl shadow-xl transition text-base">
@@ -247,7 +276,9 @@
                 otroTallerDeseado: "", // Se fusionó arriba
                 comentarioTaller: document.getElementById('comentarioTaller').value,
                 temasFuturos: temasFinales,
-                sugerencias: "" // Se unificó en el mismo campo de comentario para simplificar
+                
+                // Mapeamos la nueva pregunta de la plataforma al campo 'sugerencias' para que caiga en tu Excel
+                sugerencias: document.querySelector('input[name="evaluacionPlataforma"]:checked')?.value || '' 
             };
 
             fetch(apiUrl, {
