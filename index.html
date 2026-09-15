@@ -591,12 +591,13 @@
             btn.innerText = "Verificando...";
 
             fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'login',
-                    correoDocente: correo,
-                    passwordDocente: pass
-                })
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'login',
+                correoDocente: correo,
+                passwordDocente: pass
+            }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' } // <-- LÍNEA AGREGADA
             })
             .then(res => res.json())
             .then(data => {
@@ -720,15 +721,17 @@
             resDiv.classList.remove('hidden');
 
             fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'asistencia',
-                    matricula: matricula,
-                    correoDocente: sesionActiva.correo,
-                    tipo: document.getElementById('tipoAsistencia').value,
-                    tallerAsignado: sesionActiva.tallerAsignado
-                })
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'asistencia',
+                matricula: matricula,
+                correoDocente: sesionActiva.correo,
+                tipo: document.getElementById('tipoAsistencia').value,
+                tallerAsignado: sesionActiva.tallerAsignado
+            }),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' } // <-- LÍNEA AGREGADA
             })
+                
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'éxito') {
