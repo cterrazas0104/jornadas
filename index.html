@@ -453,7 +453,12 @@
                     option.text = `${taller.ID_Taller} - ${taller.Nombre}`;
                     select.appendChild(option);
 
-                    const instructor = taller.Instructor || 'Docente de Sistemas';
+                    // Separamos por comas y generamos las etiquetas visuales (píldoras)
+                    const instructorRaw = taller.Instructor || 'Docente de Sistemas';
+                    const etiquetasInstructores = instructorRaw.split(',').map(nom => 
+                        `<span class="inline-block bg-blue-50 border border-blue-200 text-cesba-primary px-2.5 py-1 rounded-lg text-[11px] mr-1 mb-1 shadow-sm font-bold">${nom.trim()}</span>`
+                    ).join('');
+
                     const requisitos = taller.Requisitos || 'Sin requisitos especiales de hardware/software.';
 
                     const tarjeta = `
@@ -463,8 +468,12 @@
                                     <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-3 py-1 rounded-full uppercase">${taller.ID_Taller}</span>
                                     <span class="text-xs font-bold text-gray-500 bg-gray-100 px-2.5 py-1 rounded-lg">Cupo: ${taller.Cupo_Maximo}</span>
                                 </div>
-                                <h3 class="text-xl font-extrabold text-cesba-blue mb-1">${taller.Nombre}</h3>
-                                <p class="text-xs font-bold text-cesba-primary mb-4">👨‍🏫 Instructor: ${instructor}</p>
+                                <h3 class="text-xl font-extrabold text-cesba-blue mb-3">${taller.Nombre}</h3>
+                                
+                                <div class="mb-4">
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">👨‍🏫 Instructor(es):</span>
+                                    <div class="flex flex-wrap">${etiquetasInstructores}</div>
+                                </div>
                                 
                                 <div class="bg-purple-50/60 rounded-2xl p-4 border border-purple-100 text-xs text-gray-700 mb-6 space-y-1">
                                     <span class="font-extrabold text-cesba-primary block uppercase tracking-wider text-[10px] mb-1 flex items-center gap-1">
