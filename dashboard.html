@@ -40,15 +40,16 @@
                     <span class="bg-cesba-purple text-cesba-blue font-black px-2.5 py-1 rounded-lg text-sm">CONTROL</span>
                     <span class="font-bold text-lg hidden sm:inline">Jornada Tecnológica 2026</span>
                 </div>
-                
-                <div id="userInfo" class="hidden items-center space-x-3">
-                    <div class="hidden lg:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-emerald-400 text-xs">
+
+                <div id="userInfo" class="hidden items-center space-x-2">
+                    <div class="hidden xl:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-emerald-400 text-xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                         <span id="lblUltimaActualizacion" class="font-medium">En vivo (Cada 60s)</span>
                     </div>
 
-                    <span id="labelAdminCorreo" class="text-xs text-purple-200 font-medium hidden md:inline"></span>
-                    
+                    <button onclick="dispararReenvioMasivoSalones()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1" title="Reenviar QR a todos los inscritos con el Salón actualizado">
+                        📍 Enviar Salones / QR
+                    </button>
                     <button onclick="dispararEncuestas()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-md flex items-center gap-1">
                         📩 Enviar Encuestas
                     </button>
@@ -87,7 +88,7 @@
 
     <!-- VISTA DASHBOARD COMPLETO -->
     <main id="vistaDashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        
+
         <!-- PESTAÑAS DE NAVEGACIÓN DENTRO DEL DASHBOARD -->
         <div class="flex border-b border-gray-200 gap-4 overflow-x-auto">
             <button id="tabBtnAsistencia" onclick="cambiarTab('asistencia')" class="pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary whitespace-nowrap">
@@ -129,32 +130,65 @@
                 </div>
             </div>
 
-            <!-- BUSCADOR RÁPIDO DE ALUMNOS -->
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-                <h3 class="text-lg font-bold text-cesba-blue">Buscador de Alumnos</h3>
-                <div class="flex gap-4">
-                    <input type="text" id="inputBuscarAlumno" placeholder="Ingresa matrícula o nombre..." class="flex-grow p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple" onkeyup="filtrarAlumnosGlobal()">
+            <!-- BUSCADOR RÁPIDO Y GESTIÓN DE CAMBIO DE TALLER / REENVÍO -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Buscador Global -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                    <h3 class="text-lg font-bold text-cesba-blue">🔍 Buscador de Alumnos</h3>
+                    <div class="flex gap-4">
+                        <input type="text" id="inputBuscarAlumno" placeholder="Ingresa matrícula o nombre del alumno..." class="flex-grow p-3 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple" onkeyup="filtrarAlumnosGlobal()">
+                    </div>
+                    <div id="resultadoBusquedaGlobal" class="hidden overflow-x-auto max-h-64 overflow-y-auto">
+                        <table class="w-full text-sm text-left text-gray-600">
+                            <thead class="text-xs uppercase bg-gray-100 text-gray-700 sticky top-0">
+                                <tr>
+                                    <th class="p-3">Matrícula</th>
+                                    <th class="p-3">Nombre</th>
+                                    <th class="p-3">Taller</th>
+                                    <th class="p-3">Gral</th>
+                                    <th class="p-3">Aula</th>
+                                    <th class="p-3 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaBusquedaBody"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div id="resultadoBusquedaGlobal" class="hidden overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-600">
-                        <thead class="text-xs uppercase bg-gray-100 text-gray-700">
-                            <tr>
-                                <th class="p-3">Matrícula</th>
-                                <th class="p-3">Nombre</th>
-                                <th class="p-3">Taller Asignado</th>
-                                <th class="p-3">Gral (Entrada)</th>
-                                <th class="p-3">Taller (Aula)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaBusquedaBody"></tbody>
-                    </table>
+
+                <!-- Panel de Cambio de Taller / Reenvío Individual -->
+                <div class="bg-white p-6 rounded-2xl border border-indigo-200 shadow-sm space-y-4">
+                    <div>
+                        <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded uppercase">Soporte Alumnos</span>
+                        <h3 class="text-base font-bold text-cesba-blue mt-1">Cambio de Taller y Reenvío QR</h3>
+                        <p class="text-xs text-gray-500">Valida un cambio de taller o reenvía el pase actualizado con salón a un alumno.</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Matrícula del Alumno</label>
+                            <input type="number" id="inputMatCambio" placeholder="Ej. 2716181" class="w-full p-2.5 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Taller Destino (Opcional si solo reenvías)</label>
+                            <select id="selectNuevoTaller" class="w-full p-2.5 bg-gray-50 border rounded-xl outline-none text-sm focus:ring-2 focus:ring-cesba-purple">
+                                <option value="">-- Conservar su taller actual --</option>
+                            </select>
+                        </div>
+                        <label class="flex items-center gap-2 text-xs text-gray-700 cursor-pointer pt-1">
+                            <input type="checkbox" id="chkAvisoCambio" checked class="accent-cesba-primary w-4 h-4">
+                            <span>Incluir leyenda: <b>"Cambio de taller validado, elimina el correo anterior"</b></span>
+                        </label>
+                        <button id="btnProcesarCambio" onclick="ejecutarCambioOReenvioIndividual()" class="w-full bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold py-3 px-4 rounded-xl transition shadow-sm">
+                            ✉️ Aplicar y Enviar Nuevo Pase QR
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- LISTADO Y DESGLOSE POR TALLER -->
             <div class="space-y-6">
                 <h3 class="text-xl font-bold text-cesba-blue">Estado de Talleres y Listas Oficiales</h3>
-                
+
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
                         <h4 class="font-bold text-cesba-blue text-base">Gestión de Oferta Académica y Requisitos</h4>
@@ -177,8 +211,8 @@
 
         <!-- CONTENIDO PESTAÑA 2: RESULTADOS DE ENCUESTAS -->
         <div id="tabContentEncuestas" class="hidden space-y-8">
-            
-            <!-- TARJETAS DE MÉTIRICAS GLOBALES DE ENCUESTA -->
+
+            <!-- TARJETAS DE MÉTRICAS GLOBALES DE ENCUESTA -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                     <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Encuestas Contestadas</span>
@@ -201,12 +235,9 @@
 
             <!-- GRÁFICOS VISUALES RESTAURADOS -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- 1. Gráfico de Plataforma Digital -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
                     <div>
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación Digital</h3>
-                        </div>
+                        <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación Digital</h3>
                         <p class="text-xs text-gray-500 mb-4">Aceptación del registro web y códigos QR</p>
                     </div>
                     <div class="relative w-full h-56">
@@ -214,7 +245,6 @@
                     </div>
                 </div>
 
-                <!-- 2. Gráfico de Dona: Opinión General -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
                     <div>
                         <h3 class="text-lg font-bold text-cesba-blue mb-1">Evaluación del Evento</h3>
@@ -225,7 +255,6 @@
                     </div>
                 </div>
 
-                <!-- 3. Gráfico de Barras: Lo que más gustó (RESTORED) -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
                     <div>
                         <h3 class="text-lg font-bold text-cesba-blue mb-1">Lo Que Más Gustó</h3>
@@ -239,8 +268,6 @@
 
             <!-- FILA DE TOMA DE DECISIONES PARA 2027 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                <!-- RANKING DE TALLERISTAS -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                     <h3 class="text-lg font-bold text-cesba-blue mb-1">Ranking Semáforo (Talleristas)</h3>
                     <p class="text-xs text-gray-500 mb-4">Calidad académica evaluada por los alumnos.</p>
@@ -258,7 +285,6 @@
                     </div>
                 </div>
 
-                <!-- IDEAS FUTURAS (RESTORED) -->
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-cesba-blue">💡 Temas pedidos para 2027</h3>
@@ -267,7 +293,6 @@
                     <p class="text-xs text-gray-500 mb-4">Nube de intereses tecnológicos (Tags y sugerencias abiertas).</p>
                     <div id="listTemasFuturos" class="flex-grow max-h-64 overflow-y-auto space-y-2 pr-2 text-xs text-gray-700"></div>
                 </div>
-
             </div>
 
             <!-- ANÁLISIS INDIVIDUAL POR TALLERISTA -->
@@ -321,9 +346,6 @@
 
     </main>
 
-    <!-- CONTENEDOR IMPRESIÓN PDF -->
-    <div id="areaImpresionPDF" class="hidden p-8 bg-white text-black"></div>
-
     <script>
         const apiUrl = 'https://script.google.com/macros/s/AKfycbx377YI_aPw2r4-iUkjAui7coHm-mIODeZKXboH9wJdciIjO9uFHNEUsdAfxzzapIdI/exec';
         const MILS_8_HORAS = 8 * 60 * 60 * 1000;
@@ -361,7 +383,8 @@
 
             fetch(apiUrl, {
                 method: 'POST',
-                body: JSON.stringify({ action: 'adminLogin', correoAdmin: correo, passwordAdmin: pass })
+                body: JSON.stringify({ action: 'adminLogin', correoAdmin: correo, passwordAdmin: pass }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             })
             .then(res => res.json())
             .then(data => {
@@ -386,8 +409,7 @@
             document.getElementById('vistaDashboard').classList.remove('hidden');
             document.getElementById('userInfo').classList.remove('hidden');
             document.getElementById('userInfo').classList.add('flex');
-            document.getElementById('labelAdminCorreo').innerText = correo;
-            
+
             recargarDatos();
             if (!intervaloAutoRefresh) {
                 intervaloAutoRefresh = setInterval(() => { recargarDatos(true); }, 60000);
@@ -409,7 +431,8 @@
 
             fetch(apiUrl, {
                 method: 'POST',
-                body: JSON.stringify({ action: 'adminData', correoAdmin: correo })
+                body: JSON.stringify({ action: 'adminData', correoAdmin: correo }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             })
             .then(res => res.json())
             .then(res => {
@@ -450,19 +473,31 @@
             document.getElementById('kpiPorcentajeTalleres').innerText = `${ins > 0 ? Math.round((tal / ins) * 100) : 0}% de asistencia a talleres`;
 
             const contenedor = document.getElementById('contenedorTalleres');
+            const selectCambio = document.getElementById('selectNuevoTaller');
+            const valorPrevioSelect = selectCambio.value;
+
             contenedor.innerHTML = '';
+            selectCambio.innerHTML = '<option value="">-- Conservar su taller actual --</option>';
 
             data.talleres.forEach(taller => {
                 const pctOcupacion = taller.cupoMaximo > 0 ? Math.round((taller.inscritos / taller.cupoMaximo) * 100) : 0;
+                const salonBadge = taller.salon || 'Por confirmar';
+
+                // Llenar selector de cambio de taller
+                selectCambio.innerHTML += `<option value="${taller.id}">${taller.id} - ${taller.nombre} (${taller.inscritos}/${taller.cupoMaximo})</option>`;
+
                 contenedor.innerHTML += `
                     <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start gap-2">
                             <div>
-                                <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-2.5 py-1 rounded-md uppercase">${taller.id}</span>
-                                <h4 class="text-lg font-bold text-gray-900 mt-1">${taller.nombre}</h4>
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-2.5 py-1 rounded-md uppercase">${taller.id}</span>
+                                    <span class="bg-blue-50 text-cesba-primary border border-blue-200 text-xs font-bold px-2.5 py-1 rounded-md">🏫 Salón: ${salonBadge}</span>
+                                </div>
+                                <h4 class="text-lg font-bold text-gray-900 mt-2">${taller.nombre}</h4>
                                 <p class="text-xs text-gray-500">👨‍🏫 Instructor: ${taller.instructor}</p>
                             </div>
-                            <button onclick="descargarPDFTaller('${taller.id}')" class="bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm">
+                            <button onclick="descargarPDFTaller('${taller.id}')" class="bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm whitespace-nowrap">
                                 📄 Exportar PDF
                             </button>
                         </div>
@@ -489,6 +524,8 @@
                 `;
             });
 
+            if (valorPrevioSelect) selectCambio.value = valorPrevioSelect;
+
             // ================== PESTAÑA 2: ENCUESTAS Y RANKING ==================
             const enc = data.encuestas;
             document.getElementById('kpiTotalEncuestas').innerText = enc.totalRespuestas;
@@ -507,10 +544,8 @@
             });
             document.getElementById('kpiPromedioClaridadGlobal').innerText = `${countG > 0 ? (sumaG / countG).toFixed(1) : "0.0"} / 5.0`;
 
-            // Gráfico 1: Evaluación General
             renderizarGraficoGeneral(enc.calificacionesGenerales);
 
-            // Gráfico 2: Plataforma Digital (Extraído del campo de sugerencias de la BD)
             let platData = { "Excelente": 0, "Buena": 0, "Normal": 0, "Complicada": 0 };
             enc.sugerenciasList.forEach(s => {
                 if(s.includes("Excelente")) platData["Excelente"]++;
@@ -520,10 +555,8 @@
             });
             renderizarGraficoPlataforma(platData);
 
-            // Gráfico 3: Lo que más gustó (RECUPERADO)
             renderizarGraficoGustos(enc.loQueMasGustoMap);
 
-            // Ranking Semáforo
             rankingData.sort((a, b) => b.promedioClaridad - a.promedioClaridad);
             const tablaRank = document.getElementById('tablaRankingInstructores');
             tablaRank.innerHTML = '';
@@ -543,12 +576,10 @@
                 `;
             });
 
-            // Temas para 2027 (RECUPERADO)
             const listFut = document.getElementById('listTemasFuturos');
             document.getElementById('badgeTemasCount').innerText = `${enc.temasFuturosList.length} ideas`;
             listFut.innerHTML = enc.temasFuturosList.map(item => `<div class="p-2.5 bg-gray-50 rounded-xl border border-gray-100 shadow-sm font-medium">💡 ${item}</div>`).join('') || '<p class="text-gray-400">Sin registros aún.</p>';
 
-            // Feedback Cualitativo por Tallerista
             const contTalStats = document.getElementById('contenedorStatsTalleres');
             contTalStats.innerHTML = '';
             data.talleres.forEach(t => {
@@ -606,7 +637,6 @@
         }
 
         // ====== SECCIÓN DE GRÁFICOS CHART.JS ======
-
         function renderizarGraficoGeneral(calificaciones) {
             const ctx = document.getElementById('chartCalificacionGeneral').getContext('2d');
             if (chartGralInstance) chartGralInstance.destroy();
@@ -657,10 +687,10 @@
                     datasets: [{
                         label: 'Votos',
                         data: [
-                            gustosMap["La conferencia"] || 0,
-                            gustosMap["La organización (registro, horarios, lugar)"] || 0,
-                            gustosMap["El ambiente y la convivencia"] || 0,
-                            gustosMap["Los descansos"] || 0
+                            gustosMap["La Conferencia"] || 0,
+                            gustosMap["La Organización"] || 0,
+                            gustosMap["El Ambiente"] || 0,
+                            gustosMap["Los Descansos"] || 0
                         ],
                         backgroundColor: '#8b5cf6',
                         borderRadius: 6
@@ -683,15 +713,14 @@
         function descargarExcelConstancias() {
             if (!datosGlobales) return;
 
-            let csvContent = "\uFEFF"; // Para UTF-8
+            let csvContent = "\uFEFF";
             csvContent += "Matrícula,Nombre del Alumno,Semestre,Taller Acreditado,Estado\n";
 
             datosGlobales.talleres.forEach(t => {
                 t.alumnos.forEach(a => {
                     if (a.asistioGeneral || a.asistioTaller) {
                         let estado = a.contestoEncuesta ? "LISTA PARA EMITIR" : "PENDIENTE DE ENCUESTA";
-                        let semestreValor = a.semestre ? a.semestre : ""; // Jala el grado de la hoja Alumnos
-                        
+                        let semestreValor = a.semestre ? a.semestre : "";
                         csvContent += `"${a.matricula}","${a.nombre}","${semestreValor}","${t.nombre}","${estado}"\n`;
                     }
                 });
@@ -707,7 +736,7 @@
             document.body.removeChild(link);
         }
 
-        // ====== FUNCIONES DE SOPORTE ======
+        // ====== BUSCADOR Y GESTIÓN INDIVIDUAL DE ALUMNOS ======
         function filtrarAlumnosGlobal() {
             const query = document.getElementById('inputBuscarAlumno').value.toLowerCase().trim();
             const resDiv = document.getElementById('resultadoBusquedaGlobal');
@@ -721,12 +750,17 @@
                     if (a.matricula.toString().toLowerCase().includes(query) || a.nombre.toLowerCase().includes(query)) {
                         contador++;
                         body.innerHTML += `
-                            <tr class="border-b">
+                            <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3 font-bold">${a.matricula}</td>
                                 <td class="p-3">${a.nombre}</td>
-                                <td class="p-3 font-semibold text-cesba-primary">${t.nombre}</td>
-                                <td class="p-3">${a.asistioGeneral ? '✅ ' + a.horaGeneral : '❌'}</td>
-                                <td class="p-3">${a.asistioTaller ? '✅ ' + a.horaTaller : '❌'}</td>
+                                <td class="p-3 font-semibold text-cesba-primary text-xs">${t.id} - ${t.nombre}</td>
+                                <td class="p-3 text-xs">${a.asistioGeneral ? '✅ ' + a.horaGeneral : '❌'}</td>
+                                <td class="p-3 text-xs">${a.asistioTaller ? '✅ ' + a.horaTaller : '❌'}</td>
+                                <td class="p-3 text-center">
+                                    <button onclick="seleccionarAlumnoParaCambio('${a.matricula}', '${t.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-lg text-xs font-bold">
+                                        🔄 Cambiar / Reenviar QR
+                                    </button>
+                                </td>
                             </tr>
                         `;
                     }
@@ -736,12 +770,78 @@
             else resDiv.classList.add('hidden');
         }
 
+        function seleccionarAlumnoParaCambio(matricula, idTallerActual) {
+            document.getElementById('inputMatCambio').value = matricula;
+            document.getElementById('selectNuevoTaller').value = idTallerActual;
+            document.getElementById('inputMatCambio').focus();
+        }
+
+        function ejecutarCambioOReenvioIndividual() {
+            const mat = document.getElementById('inputMatCambio').value.trim();
+            const nuevoTaller = document.getElementById('selectNuevoTaller').value;
+            const esCambio = document.getElementById('chkAvisoCambio').checked;
+            const btn = document.getElementById('btnProcesarCambio');
+
+            if (!mat) {
+                alert("Por favor ingresa la matrícula del alumno.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Enviando correo...";
+
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'reenviarPaseIndividual',
+                    correoAdmin: obtenerSesionAdminValida(),
+                    matricula: mat,
+                    nuevoTaller: nuevoTaller,
+                    esCambio: esCambio
+                }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'éxito') {
+                    alert("✅ " + data.mensaje);
+                    recargarDatos();
+                } else {
+                    alert("⚠️ " + data.mensaje);
+                }
+            })
+            .catch(() => alert("Error de red al procesar la solicitud."))
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "✉️ Aplicar y Enviar Nuevo Pase QR";
+            });
+        }
+
+        function dispararReenvioMasivoSalones() {
+            if (!confirm("¿Confirmas que deseas REENVIAR el pase QR actualizado con el SALÓN a TODOS los alumnos inscritos actualmente?")) return;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'reenviarPasesMasivo',
+                    correoAdmin: obtenerSesionAdminValida()
+                }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'éxito') alert("🎉 " + data.mensaje);
+                else alert("Error: " + data.mensaje);
+            })
+            .catch(() => alert("Error de red al enviar los pases masivos."));
+        }
+
+        // ====== CORRECCIÓN DEFINITIVA DE EXPORTACIÓN PDF ======
         function descargarPDFTaller(idTaller) {
             if (!datosGlobales) return;
             const taller = datosGlobales.talleres.find(t => t.id === idTaller);
             if (!taller) return;
 
-            const area = document.getElementById('areaImpresionPDF');
             let filasHTML = '';
             taller.alumnos.forEach((al, index) => {
                 filasHTML += `
@@ -755,20 +855,27 @@
                 `;
             });
 
-            area.innerHTML = `
+            // Creamos un contenedor visible en memoria para que html2canvas no capture una hoja en blanco
+            const contenedorPDF = document.createElement('div');
+            contenedorPDF.style.padding = '20px';
+            contenedorPDF.style.backgroundColor = '#ffffff';
+            contenedorPDF.style.color = '#111111';
+            contenedorPDF.style.width = '750px';
+
+            contenedorPDF.innerHTML = `
                 <div style="font-family: Arial, sans-serif; color: #111;">
                     <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; margin-bottom: 15px;">
-                        <h2 style="margin: 0; color: #1e3a8a;">CENTRO DE ESTUDIOS SUPERIORES DEL BAJÍO</h2>
-                        <h3 style="margin: 5px 0 0 0; color: #555;">Lista de Asistencia - Jornada Tecnológica 2026</h3>
+                        <h2 style="margin: 0; color: #1e3a8a; font-size: 18px;">CENTRO DE ESTUDIOS SUPERIORES DEL BAJÍO</h2>
+                        <h3 style="margin: 5px 0 0 0; color: #555; font-size: 14px;">Lista de Asistencia Oficial - Jornada Tecnológica 2026</h3>
                     </div>
-                    <table style="width: 100%; margin-bottom: 15px; font-size: 12px; background: #f9f9f9; padding: 10px; border-radius: 5px;">
+                    <table style="width: 100%; margin-bottom: 15px; font-size: 12px; background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
                         <tr>
-                            <td><b>Taller:</b> ${taller.id} - ${taller.nombre}</td>
-                            <td><b>Instructor:</b> ${taller.instructor}</td>
+                            <td style="padding: 4px;"><b>Taller:</b> ${taller.id} - ${taller.nombre}</td>
+                            <td style="padding: 4px;"><b>Salón / Aula:</b> ${taller.salon || 'Por confirmar'}</td>
                         </tr>
                         <tr>
-                            <td><b>Inscritos:</b> ${taller.inscritos} alumnos</td>
-                            <td><b>Asistencias en Aula:</b> ${taller.asistieronTaller} alumnos</td>
+                            <td style="padding: 4px;"><b>Instructor:</b> ${taller.instructor}</td>
+                            <td style="padding: 4px;"><b>Inscritos:</b> ${taller.inscritos} | <b>Asistencias:</b> ${taller.asistieronTaller}</td>
                         </tr>
                     </table>
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -781,7 +888,7 @@
                                 <th style="padding: 8px;">Firma de Conformidad</th>
                             </tr>
                         </thead>
-                        <tbody>${filasHTML || '<tr><td colspan="5" style="text-align:center; padding:10px;">Sin alumnos inscritos.</td></tr>'}</tbody>
+                        <tbody>${filasHTML || '<tr><td colspan="5" style="text-align:center; padding:12px;">Sin alumnos inscritos en este taller.</td></tr>'}</tbody>
                     </table>
                     <div style="margin-top: 30px; text-align: right; font-size: 10px; color: #777;">
                         Reporte generado el ${new Date().toLocaleString('es-MX')} • Mtro. César Terrazas Zarazúa
@@ -789,8 +896,15 @@
                 </div>
             `;
 
-            const opt = { margin: 10, filename: `Lista_Asistencia_${taller.id}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-            html2pdf().set(opt).from(area).save();
+            const opt = {
+                margin: 10,
+                filename: `Lista_Asistencia_${taller.id}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(contenedorPDF).save();
         }
 
         function dispararEncuestas() {
@@ -799,16 +913,20 @@
             if (!baseUrlEncuesta) return;
 
             if (confirm("¿Confirmas que deseas enviar el correo con la encuesta a TODOS los alumnos que registraron asistencia hoy?")) {
-                fetch(apiUrl, { method: 'POST', body: JSON.stringify({ action: 'enviarEncuestas', correoAdmin: obtenerSesionAdminValida(), baseUrlEncuesta: baseUrlEncuesta }) })
+                fetch(apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'enviarEncuestas', correoAdmin: obtenerSesionAdminValida(), baseUrlEncuesta: baseUrlEncuesta }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                })
                 .then(res => res.json())
                 .then(data => { if (data.status === 'éxito') alert("¡Éxito! " + data.mensaje); else alert("Error: " + data.mensaje); });
             }
         }
-function dispararClavesDocentes() {
-            // Sugiere automáticamente la URL quitándole el 'dashboard.html'
+
+        function dispararClavesDocentes() {
             const defaultUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
             const baseUrlSitio = prompt("Confirma la URL de la página principal para mandársela a los profesores:", defaultUrl);
-            
+
             if (!baseUrlSitio) return;
 
             if (confirm("¿Confirmas que deseas enviar por correo las CONTRASEÑAS e INSTRUCCIONES a todos los docentes registrados en tu Excel?")) {
@@ -818,7 +936,8 @@ function dispararClavesDocentes() {
                         action: 'enviarClavesDocentes', 
                         correoAdmin: obtenerSesionAdminValida(), 
                         baseUrlSitio: baseUrlSitio 
-                    }) 
+                    }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
                 })
                 .then(res => res.json())
                 .then(data => { 
@@ -828,9 +947,10 @@ function dispararClavesDocentes() {
                 .catch(() => alert("Error al procesar el envío masivo de claves."));
             }
         }
+
         function descargarPlantillaTalleres() {
-            let csvContent = "\uFEFFID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos\n";
-            csvContent += "T01,\"Introducción a los Contenedores\",\"Guillermo Pucheta\",25,\"Laptop con Windows 10/11 o macOS, 8GB RAM, Virtualization activa en BIOS.\"\n";
+            let csvContent = "\uFEFFID_Taller,Nombre,Instructor,Cupo_Maximo,Requisitos,Salon\n";
+            csvContent += "T01,\"Introducción a los Contenedores\",\"Guillermo Pucheta\",25,\"Laptop con Windows 10/11 o macOS, 8GB RAM.\",\"Lab 1\"\n";
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
@@ -880,7 +1000,8 @@ function dispararClavesDocentes() {
                 if (confirm(`¿Confirmas que deseas actualizar la oferta con ${matriz.length - 1} talleres? Esto sobrescribirá la lista actual.`)) {
                     fetch(apiUrl, {
                         method: 'POST',
-                        body: JSON.stringify({ action: 'actualizarTalleresCSV', correoAdmin: obtenerSesionAdminValida(), matrizTalleres: matriz })
+                        body: JSON.stringify({ action: 'actualizarTalleresCSV', correoAdmin: obtenerSesionAdminValida(), matrizTalleres: matriz }),
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
                     })
                     .then(res => res.json())
                     .then(data => {
