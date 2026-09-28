@@ -434,13 +434,14 @@
             document.getElementById('modalPrivacidad').classList.remove('flex');
         }
 
-        // CARGAR CATÁLOGO DE TALLERES Y REQUISITOS
-        document.addEventListener('DOMContentLoaded', () => {
+        // FUNCIÓN REUTILIZABLE PARA CARGAR Y ACTUALIZAR CATÁLOGO Y CUPOS EN TIEMPO REAL
+        function cargarCatalogoTalleres() {
             fetch(apiUrl)
             .then(res => res.json())
             .then(talleres => {
                 const select = document.getElementById('idTaller');
                 const grid = document.getElementById('grid-talleres');
+                const seleccionPrevia = select.value;
                 
                 select.innerHTML = '<option value="" disabled selected>Elige una opción...</option>';
                 grid.innerHTML = ''; 
@@ -448,12 +449,20 @@
                 const talleresValidos = talleres.filter(t => t.ID_Taller);
 
                 talleresValidos.forEach(taller => {
+                    const cupoMaximo = parseInt(taller.Cupo_Maximo, 10) || 0;
+                    const disponibles = (taller.Disponibles !== undefined) ? parseInt(taller.Disponibles, 10) : cupoMaximo;
+                    const agotado = disponibles <= 0;
+
+                    // 1. Llenar el <select> del formulario
                     let option = document.createElement('option');
                     option.value = taller.ID_Taller;
-                    option.text = `${taller.ID_Taller} - ${taller.Nombre}`;
+                    option.text = agotado 
+                        ? `🚫 ${taller.ID_Taller} - ${taller.Nombre} (AGOTADO)` 
+                        : `${taller.ID_Taller} - ${taller.Nombre} (${disponibles} disp.)`;
+                    option.disabled = agotado;
                     select.appendChild(option);
 
-                    // Separamos por comas y generamos las etiquetas visuales (píldoras)
+                    // 2. Separar instructores por comas y generar píldoras visuales
                     const instructorRaw = taller.Instructor || 'Docente de Sistemas';
                     const etiquetasInstructores = instructorRaw.split(',').map(nom => 
                         `<span class="inline-block bg-blue-50 border border-blue-200 text-cesba-primary px-2.5 py-1 rounded-lg text-[11px] mr-1 mb-1 shadow-sm font-bold">${nom.trim()}</span>`
@@ -461,12 +470,27 @@
 
                     const requisitos = taller.Requisitos || 'Sin requisitos especiales de hardware/software.';
 
+                    // 3. Semáforo de lugares disponibles en la tarjeta
+                    let badgeCupo = '';
+                    if (agotado) {
+                        badgeCupo = `<span class="text-xs font-black text-rose-700 bg-rose-100 border border-rose-200 px-3 py-1 rounded-lg uppercase">🚫 Cupo Agotado</span>`;
+                    } else if (disponibles <= 5) {
+                        badgeCupo = `<span class="text-xs font-extrabold text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-lg animate-pulse">🔥 Quedan ${disponibles} de ${cupoMaximo}</span>`;
+                    } else {
+                        badgeCupo = `<span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">Disponibles: ${disponibles} / ${cupoMaximo}</span>`;
+                    }
+
+                    // 4. Estado del botón de la tarjeta
+                    const botonAccion = agotado
+                        ? `<button disabled class="w-full bg-gray-200 text-gray-400 text-xs font-bold py-3 px-4 rounded-xl cursor-not-allowed">Taller Lleno</button>`
+                        : `<button onclick="elegirTaller('${taller.ID_Taller}')" class="w-full bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold py-3 px-4 rounded-xl transition duration-300 shadow-sm flex items-center justify-center gap-2">Inscribirme a este Taller →</button>`;
+
                     const tarjeta = `
-                        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full">
+                        <div class="bg-white rounded-3xl p-6 border ${agotado ? 'border-gray-200 opacity-75' : 'border-gray-200 hover:shadow-xl'} shadow-sm transition-all duration-300 flex flex-col justify-between h-full">
                             <div>
                                 <div class="flex justify-between items-center mb-3">
                                     <span class="bg-cesba-purple/20 text-cesba-purpleDark text-xs font-black px-3 py-1 rounded-full uppercase">${taller.ID_Taller}</span>
-                                    <span class="text-xs font-bold text-gray-500 bg-gray-100 px-2.5 py-1 rounded-lg">Cupo: ${taller.Cupo_Maximo}</span>
+                                    ${badgeCupo}
                                 </div>
                                 <h3 class="text-xl font-extrabold text-cesba-blue mb-3">${taller.Nombre}</h3>
                                 
@@ -484,14 +508,20 @@
                             </div>
 
                             <div class="pt-4 border-t border-gray-100 flex justify-end">
-                                <button onclick="elegirTaller('${taller.ID_Taller}')" class="w-full bg-cesba-primary hover:bg-blue-900 text-white text-xs font-bold py-3 px-4 rounded-xl transition duration-300 shadow-sm flex items-center justify-center gap-2">
-                                    Inscribirme a este Taller →
-                                </button>
+                                ${botonAccion}
                             </div>
                         </div>
                     `;
                     grid.innerHTML += tarjeta;
                 });
+
+                // Restaurar selección previa si sigue teniendo cupo
+                if (seleccionPrevia) {
+                    const optPrevia = select.querySelector(`option[value="${seleccionPrevia}"]`);
+                    if (optPrevia && !optPrevia.disabled) {
+                        select.value = seleccionPrevia;
+                    }
+                }
             })
             .catch(() => {
                 document.getElementById('grid-talleres').innerHTML = `
@@ -500,7 +530,10 @@
                     </div>
                 `;
             });
-        });
+        }
+
+        // Ejecutar al abrir la página
+        document.addEventListener('DOMContentLoaded', cargarCatalogoTalleres);
 
         function elegirTaller(id) {
             document.getElementById('idTaller').value = id;
@@ -534,6 +567,8 @@
                     mensajeArea.innerHTML = "⚠️ " + data.mensaje;
                 }
                 mensajeArea.classList.remove('hidden');
+                // Recargar catálogo y cupos inmediatamente después del intento de inscripción
+                cargarCatalogoTalleres();
             })
             .catch(() => {
                 mensajeArea.className = "mt-6 text-center text-sm font-bold p-4 rounded-xl bg-rose-100 text-rose-800 border border-rose-200";
@@ -600,13 +635,13 @@
             btn.innerText = "Verificando...";
 
             fetch(apiUrl, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'login',
-                correoDocente: correo,
-                passwordDocente: pass
-            }),
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' } // <-- LÍNEA AGREGADA
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'login',
+                    correoDocente: correo,
+                    passwordDocente: pass
+                }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             })
             .then(res => res.json())
             .then(data => {
@@ -730,17 +765,16 @@
             resDiv.classList.remove('hidden');
 
             fetch(apiUrl, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'asistencia',
-                matricula: matricula,
-                correoDocente: sesionActiva.correo,
-                tipo: document.getElementById('tipoAsistencia').value,
-                tallerAsignado: sesionActiva.tallerAsignado
-            }),
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' } // <-- LÍNEA AGREGADA
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'asistencia',
+                    matricula: matricula,
+                    correoDocente: sesionActiva.correo,
+                    tipo: document.getElementById('tipoAsistencia').value,
+                    tallerAsignado: sesionActiva.tallerAsignado
+                }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             })
-                
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'éxito') {
