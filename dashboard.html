@@ -6,8 +6,9 @@
     <title>Cuarto de Control | Jornada Tecnológica 2026</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- html2pdf.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- jsPDF y AutoTable (Generación vectorial nativa de PDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <!-- Chart.js para gráficos avanzados -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts -->
@@ -836,75 +837,126 @@
             .catch(() => alert("Error de red al enviar los pases masivos."));
         }
 
-        // ====== CORRECCIÓN DEFINITIVA DE EXPORTACIÓN PDF ======
+        // ====== GENERACIÓN VECTORIAL NATIVA DE PDF (jsPDF + AutoTable) ======
         function descargarPDFTaller(idTaller) {
             if (!datosGlobales) return;
             const taller = datosGlobales.talleres.find(t => t.id === idTaller);
             if (!taller) return;
 
-            let filasHTML = '';
-            taller.alumnos.forEach((al, index) => {
-                filasHTML += `
-                    <tr style="border-bottom: 1px solid #ddd; font-size: 11px;">
-                        <td style="padding: 8px;">${index + 1}</td>
-                        <td style="padding: 8px; font-weight: bold;">${al.matricula}</td>
-                        <td style="padding: 8px;">${al.nombre}</td>
-                        <td style="padding: 8px; text-align: center;">${al.asistioTaller ? 'ASISTIÓ (' + al.horaTaller + ')' : 'FALTA'}</td>
-                        <td style="padding: 8px; width: 120px; border-bottom: 1px dashed #999;"></td>
-                    </tr>
-                `;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            // 1. Encabezado Institucional
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(30, 58, 138); // Azul CESBA (#1e3a8a)
+            doc.text("CENTRO DE ESTUDIOS SUPERIORES DEL BAJÍO", 105, 16, { align: "center" });
+
+            doc.setFontSize(11);
+            doc.setTextColor(85, 85, 85);
+            doc.text("Lista de Asistencia Oficial - Jornada Tecnológica 2026", 105, 22, { align: "center" });
+
+            doc.setDrawColor(30, 58, 138);
+            doc.setLineWidth(0.6);
+            doc.line(14, 25, 196, 25);
+
+            // 2. Cuadro de Datos del Taller (con ajuste automático de texto largo)
+            doc.setFillColor(248, 250, 252);
+            doc.setDrawColor(226, 232, 240);
+            doc.roundedRect(14, 29, 182, 24, 2, 2, 'FD');
+
+            doc.setFontSize(9);
+            doc.setTextColor(17, 17, 17);
+
+            // Título del taller (multilínea por si es largo como el T03 o T10)
+            doc.setFont("helvetica", "bold");
+            doc.text("Taller:", 18, 35);
+            doc.setFont("helvetica", "normal");
+            const nombreTallerLineas = doc.splitTextToSize(`${taller.id} - ${taller.nombre}`, 105);
+            doc.text(nombreTallerLineas, 32, 35);
+
+            // Salón
+            doc.setFont("helvetica", "bold");
+            doc.text("Salón / Aula:", 145, 35);
+            doc.setFont("helvetica", "normal");
+            doc.text(`${taller.salon || 'Por confirmar'}`, 168, 35);
+
+            // Instructor
+            doc.setFont("helvetica", "bold");
+            doc.text("Instructor:", 18, 47);
+            doc.setFont("helvetica", "normal");
+            const instLineas = doc.splitTextToSize(`${taller.instructor}`, 100);
+            doc.text(instLineas, 36, 47);
+
+            // Inscritos y Asistencias
+            doc.setFont("helvetica", "bold");
+            doc.text(`Inscritos: ${taller.inscritos}   |   Asistencias: ${taller.asistieronTaller}`, 145, 47);
+
+            // 3. Preparar filas de alumnos ordenadas alfabéticamente por nombre
+            const alumnosOrdenados = [...taller.alumnos].sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+            const filas = alumnosOrdenados.map((al, index) => [
+                index + 1,
+                al.matricula,
+                al.nombre,
+                al.semestre || '-',
+                al.asistioTaller ? `ASISTIÓ (${al.horaTaller})` : 'FALTA',
+                '' // Espacio limpio para firma física si se requiere
+            ]);
+
+            // 4. Generar Tabla Vectorial
+            doc.autoTable({
+                startY: 57,
+                head: [['#', 'Matrícula', 'Nombre del Alumno', 'Sem.', 'Estatus Taller', 'Observaciones / Firma']],
+                body: filas.length > 0 ? filas : [['-', '-', 'Sin alumnos inscritos en este taller', '-', '-', '-']],
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [30, 58, 138],
+                    textColor: 255,
+                    fontSize: 9,
+                    fontStyle: 'bold',
+                    halign: 'center'
+                },
+                bodyStyles: {
+                    fontSize: 8.5,
+                    textColor: [30, 30, 30],
+                    cellPadding: 2.5
+                },
+                columnStyles: {
+                    0: { halign: 'center', cellWidth: 10 },
+                    1: { fontStyle: 'bold', halign: 'center', cellWidth: 25 },
+                    2: { cellWidth: 72 },
+                    3: { halign: 'center', cellWidth: 14 },
+                    4: { halign: 'center', cellWidth: 30 },
+                    5: { cellWidth: 31 }
+                },
+                alternateRowStyles: {
+                    fillColor: [249, 250, 251]
+                },
+                didParseCell: function(data) {
+                    if (data.section === 'body' && data.column.index === 4) {
+                        if (String(data.cell.raw).includes('ASISTIÓ')) {
+                            data.cell.styles.textColor = [5, 150, 105]; // Verde esmeralda
+                            data.cell.styles.fontStyle = 'bold';
+                        } else {
+                            data.cell.styles.textColor = [225, 29, 72]; // Rojo
+                        }
+                    }
+                }
             });
 
-            // Creamos un contenedor visible en memoria para que html2canvas no capture una hoja en blanco
-            const contenedorPDF = document.createElement('div');
-            contenedorPDF.style.padding = '20px';
-            contenedorPDF.style.backgroundColor = '#ffffff';
-            contenedorPDF.style.color = '#111111';
-            contenedorPDF.style.width = '750px';
+            // 5. Pie de página
+            const finalY = doc.lastAutoTable.finalY || 65;
+            doc.setFontSize(8);
+            doc.setTextColor(120, 120, 120);
+            doc.text(
+                `Reporte generado el ${new Date().toLocaleString('es-MX')} • Mtro. César Terrazas Zarazúa`,
+                196,
+                Math.min(finalY + 10, 285),
+                { align: "right" }
+            );
 
-            contenedorPDF.innerHTML = `
-                <div style="font-family: Arial, sans-serif; color: #111;">
-                    <div style="text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; margin-bottom: 15px;">
-                        <h2 style="margin: 0; color: #1e3a8a; font-size: 18px;">CENTRO DE ESTUDIOS SUPERIORES DEL BAJÍO</h2>
-                        <h3 style="margin: 5px 0 0 0; color: #555; font-size: 14px;">Lista de Asistencia Oficial - Jornada Tecnológica 2026</h3>
-                    </div>
-                    <table style="width: 100%; margin-bottom: 15px; font-size: 12px; background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                        <tr>
-                            <td style="padding: 4px;"><b>Taller:</b> ${taller.id} - ${taller.nombre}</td>
-                            <td style="padding: 4px;"><b>Salón / Aula:</b> ${taller.salon || 'Por confirmar'}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 4px;"><b>Instructor:</b> ${taller.instructor}</td>
-                            <td style="padding: 4px;"><b>Inscritos:</b> ${taller.inscritos} | <b>Asistencias:</b> ${taller.asistieronTaller}</td>
-                        </tr>
-                    </table>
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead>
-                            <tr style="background: #1e3a8a; color: white; font-size: 11px;">
-                                <th style="padding: 8px;">#</th>
-                                <th style="padding: 8px;">Matrícula</th>
-                                <th style="padding: 8px;">Nombre del Alumno</th>
-                                <th style="padding: 8px; text-align: center;">Estatus Taller</th>
-                                <th style="padding: 8px;">Firma de Conformidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>${filasHTML || '<tr><td colspan="5" style="text-align:center; padding:12px;">Sin alumnos inscritos en este taller.</td></tr>'}</tbody>
-                    </table>
-                    <div style="margin-top: 30px; text-align: right; font-size: 10px; color: #777;">
-                        Reporte generado el ${new Date().toLocaleString('es-MX')} • Mtro. César Terrazas Zarazúa
-                    </div>
-                </div>
-            `;
-
-            const opt = {
-                margin: 10,
-                filename: `Lista_Asistencia_${taller.id}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(contenedorPDF).save();
+            doc.save(`Lista_Asistencia_${taller.id}.pdf`);
         }
 
         function dispararEncuestas() {
