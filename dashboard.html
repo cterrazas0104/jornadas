@@ -17,7 +17,6 @@
 </head>
 <body class="bg-gray-100 font-sans text-gray-900 antialiased min-h-screen">
 
-    <!-- BARRA SUPERIOR (SOLUCIÓN MÓVIL Y ROLES) -->
     <nav class="bg-cesba-blue text-white shadow-lg sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <div class="flex flex-col md:flex-row justify-between items-center gap-3">
@@ -51,7 +50,6 @@
         </div>
     </nav>
 
-    <!-- VISTA LOGIN -->
     <main id="vistaLogin" class="max-w-md mx-auto p-4 mt-16">
         <div class="bg-white rounded-3xl p-8 shadow-2xl border border-gray-200">
             <h2 class="text-2xl font-black text-cesba-blue mb-2 text-center">Acceso Administrativo</h2>
@@ -72,38 +70,49 @@
         </div>
     </main>
 
-    <!-- VISTA DASHBOARD -->
     <main id="vistaDashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        <!-- PESTAÑAS DE NAVEGACIÓN -->
         <div class="flex border-b border-gray-200 gap-4 overflow-x-auto">
             <button id="tabBtnAsistencia" onclick="cambiarTab('asistencia')" class="pb-3 px-4 font-bold text-sm text-cesba-primary border-b-2 border-cesba-primary whitespace-nowrap">📊 Asistencia y Listas</button>
             <button id="tabBtnEncuestas" onclick="cambiarTab('encuestas')" class="pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary whitespace-nowrap">⭐ Resultados de Encuestas</button>
             <button id="tabBtnConstancias" onclick="cambiarTab('constancias')" class="pb-3 px-4 font-bold text-sm text-gray-400 hover:text-cesba-primary whitespace-nowrap flex items-center gap-1">🎓 Constancias (Diseño)</button>
         </div>
 
-        <!-- CONTENIDO PESTAÑA 1 -->
         <div id="tabContentAsistencia" class="space-y-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Inscritos</span>
-                    <div id="kpiInscritos" class="text-4xl font-black text-cesba-blue mt-2">0</div>
-                    <span class="text-xs text-gray-500 mt-1 block">Alumnos registrados</span>
+            <!-- PANEL DE KPIS ACTUALIZADO A 5 COLUMNAS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Inscritos</span>
+                    <div id="kpiInscritos" class="text-3xl font-black text-cesba-blue mt-1">0</div>
+                    <span class="text-[10px] text-gray-500 mt-1 block">Alumnos registrados</span>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                    <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Asistencia Conferencia</span>
-                    <div id="kpiGeneral" class="text-4xl font-black text-emerald-600 mt-2">0</div>
-                    <span id="kpiPorcentajeGeneral" class="text-xs text-gray-500 mt-1 block">0% de asistencia</span>
+                
+                <!-- NUEVO KPI DE FALTANTES -->
+                <div class="bg-rose-50 p-5 rounded-2xl border border-rose-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-[11px] font-bold text-rose-600 uppercase tracking-wider">Sin Registro</span>
+                        <div id="kpiFaltantes" class="text-3xl font-black text-rose-600 mt-1">0</div>
+                    </div>
+                    <div class="mt-3 flex gap-2">
+                        <button onclick="descargarFaltantesCSV()" class="bg-white text-rose-700 border border-rose-200 hover:bg-rose-100 text-[10px] font-bold px-2 py-1.5 rounded shadow-sm w-full transition">📥 Excel</button>
+                        <button onclick="dispararRecordatorios()" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1.5 rounded shadow-sm w-full transition">📩 Avisar</button>
+                    </div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Asistencia a Talleres</span>
-                    <div id="kpiTalleres" class="text-4xl font-black text-indigo-600 mt-2">0</div>
-                    <span id="kpiPorcentajeTalleres" class="text-xs text-gray-500 mt-1 block">0% de asistencia</span>
+
+                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                    <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">Entrada (Gral)</span>
+                    <div id="kpiGeneral" class="text-3xl font-black text-emerald-600 mt-1">0</div>
+                    <span id="kpiPorcentajeGeneral" class="text-[10px] text-gray-500 mt-1 block">0% de asistencia</span>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                    <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Talleres Activos</span>
-                    <div id="kpiTotalTalleres" class="text-4xl font-black text-purple-600 mt-2">0</div>
-                    <span class="text-xs text-gray-500 mt-1 block">Opciones disponibles</span>
+                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                    <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">Aula (Talleres)</span>
+                    <div id="kpiTalleres" class="text-3xl font-black text-indigo-600 mt-1">0</div>
+                    <span id="kpiPorcentajeTalleres" class="text-[10px] text-gray-500 mt-1 block">0% de asistencia</span>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                    <span class="text-[11px] font-bold text-purple-600 uppercase tracking-wider">Talleres Activos</span>
+                    <div id="kpiTotalTalleres" class="text-3xl font-black text-purple-600 mt-1">0</div>
+                    <span class="text-[10px] text-gray-500 mt-1 block">Opciones disponibles</span>
                 </div>
             </div>
 
@@ -155,7 +164,6 @@
             </div>
         </div>
 
-        <!-- CONTENIDO PESTAÑA 2: ENCUESTAS -->
         <div id="tabContentEncuestas" class="hidden space-y-8">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
@@ -192,7 +200,6 @@
             </div>
         </div>
 
-        <!-- CONTENIDO PESTAÑA 3: CONSTANCIAS -->
         <div id="tabContentConstancias" class="hidden space-y-6">
             <div class="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl border border-gray-200 shadow-sm gap-4">
                 <h3 class="text-xl font-bold text-cesba-blue">Panel de Emisión de Constancias</h3>
@@ -330,6 +337,7 @@
             document.getElementById('kpiTotalTalleres').innerText = data.talleres.length;
             document.getElementById('kpiPorcentajeGeneral').innerText = `${ins > 0 ? Math.round((gen / ins) * 100) : 0}% de asistencia a entrada`;
             document.getElementById('kpiPorcentajeTalleres').innerText = `${ins > 0 ? Math.round((tal / ins) * 100) : 0}% de asistencia a talleres`;
+            document.getElementById('kpiFaltantes').innerText = data.faltantes ? data.faltantes.length : 0;
 
             const contenedor = document.getElementById('contenedorTalleres');
             const selectCambio = document.getElementById('selectNuevoTaller');
@@ -357,7 +365,6 @@
             if (valorPrevioSelect) selectCambio.value = valorPrevioSelect;
             filtrarAlumnosGlobal(rol); // Refrescar buscador
 
-            // Encuestas y Constancias (mismo código visual de antes)
             const enc = data.encuestas;
             document.getElementById('kpiTotalEncuestas').innerText = enc.totalRespuestas;
             const pos = (enc.calificacionesGenerales["Superó expectativas"] || 0) + (enc.calificacionesGenerales["Estuvo muy bien"] || 0);
@@ -373,6 +380,25 @@
             rankingData.sort((a, b) => b.promedioClaridad - a.promedioClaridad);
             document.getElementById('tablaRankingInstructores').innerHTML = rankingData.map((t, i) => `<tr class="border-b"><td class="p-2 font-bold text-gray-500">#${i + 1}</td><td class="p-2 font-bold text-cesba-blue text-xs">${t.instructor}</td><td class="p-2 text-center"><span class="px-2 py-1 rounded-full text-xs font-black bg-gray-100">${t.promedioClaridad}</span></td></tr>`).join('');
             document.getElementById('listTemasFuturos').innerHTML = enc.temasFuturosList.map(item => `<div class="p-2 bg-gray-50 rounded border mb-1">💡 ${item}</div>`).join('');
+
+            const contTalStats = document.getElementById('contenedorStatsTalleres');
+            contTalStats.innerHTML = '';
+            data.talleres.forEach(t => {
+                if(t.respuestasEncuestaCount === 0) return;
+                let comentariosHTML = t.comentariosTaller.length > 0 
+                    ? t.comentariosTaller.map(c => `<li class="border-b border-gray-100 pb-1 font-normal text-gray-600">"${c}"</li>`).join('')
+                    : '<li class="text-gray-400 italic font-normal">Sin comentarios escritos.</li>';
+
+                contTalStats.innerHTML += `
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                        <h4 class="text-sm font-bold text-cesba-blue mb-1">${t.instructor}</h4>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase mb-2">${t.nombre}</p>
+                        <div class="pt-2 border-t">
+                            <ul class="max-h-32 overflow-y-auto space-y-1.5 text-xs pr-1">${comentariosHTML}</ul>
+                        </div>
+                    </div>
+                `;
+            });
 
             let listos = 0; let pendientes = 0;
             document.getElementById('tablaConstanciasBody').innerHTML = data.talleres.flatMap(t => t.alumnos.filter(a => a.asistioGeneral || a.asistioTaller).map(a => {
@@ -458,6 +484,23 @@
                 if (confirm(`¿Actualizar oferta con ${matriz.length - 1} talleres?`)) fetch(apiUrl, { method: 'POST', body: JSON.stringify({ action: 'actualizarTalleresCSV', correoAdmin: obtenerSesionAdminValida().correo, matrizTalleres: matriz }) }).then(res => res.json()).then(data => { alert(data.mensaje); recargarDatos(); });
                 input.value = '';
             }; reader.readAsText(file, "UTF-8");
+        }
+
+        // --- NUEVAS FUNCIONES PARA FALTANTES ---
+        function descargarFaltantesCSV() {
+            if (!datosGlobales || !datosGlobales.faltantes) return;
+            let csv = "\uFEFFMatrícula,Nombre,Semestre,Correo\n";
+            datosGlobales.faltantes.forEach(a => { csv += `"${a.matricula}","${a.nombre}","${a.semestre}","${a.correo}"\n`; });
+            const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })); link.download = "Alumnos_Faltantes_Registro.csv"; link.click();
+        }
+
+        function dispararRecordatorios() {
+            const url = prompt("Confirma la URL pública para el registro:", window.location.origin + window.location.pathname.replace('dashboard.html', 'index.html'));
+            if (!url) return;
+            if (confirm("¿Enviar correo de recordatorio a TODOS los alumnos que aún no se registran?")) {
+                fetch(apiUrl, { method: 'POST', body: JSON.stringify({ action: 'recordatorioFaltantes', correoAdmin: obtenerSesionAdminValida().correo, baseUrlSitio: url }) })
+                .then(res => res.json()).then(data => alert(data.status === 'éxito' ? "✅ " + data.mensaje : "⚠️ " + data.mensaje));
+            }
         }
 
         // Exportaciones (PDF y Excel)
